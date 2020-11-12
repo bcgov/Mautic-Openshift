@@ -31,7 +31,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 
 # Define Mautic version and expected SHA1 signature
 ENV MAUTIC_VERSION 3.12
-
+ENV MAUTIC_SHA1 ba08bb96d53feff412df53d44decee6003633168
 # Setting PHP properties
 ENV PHP_INI_DATE_TIMEZONE='UTC' \
     PHP_MEMORY_LIMIT=512M \
