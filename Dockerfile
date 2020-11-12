@@ -39,6 +39,7 @@ ENV PHP_INI_DATE_TIMEZONE='UTC' \
     PHP_MAX_EXECUTION_TIME=300
     
 RUN curl -o mautic.zip -SL https://github.com/mautic/mautic/releases/download/${MAUTIC_VERSION}/${MAUTIC_VERSION}.zip \
+    && echo "$MAUTIC_SHA1 *mautic.zip" | sha1sum -c - \
     && mkdir /usr/src/mautic \
     && unzip mautic.zip -d /usr/src/mautic \
     && rm mautic.zip
