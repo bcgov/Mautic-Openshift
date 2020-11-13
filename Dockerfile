@@ -30,8 +30,8 @@ RUN docker-php-ext-configure imap --with-imap --with-imap-ssl --with-kerberos \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 # Define Mautic version and expected SHA1 signature
-ENV MAUTIC_VERSION 3.12
-ENV MAUTIC_SHA1 ba08bb96d53feff412df53d44decee6003633168
+ENV MAUTIC_VERSION 3.11
+ENV MAUTIC_SHA1 dfbbfc38ff667eaa8ac7b0ead93747c7ebbc55eb
 # Setting PHP properties
 ENV PHP_INI_DATE_TIMEZONE='UTC' \
     PHP_MEMORY_LIMIT=512M \
