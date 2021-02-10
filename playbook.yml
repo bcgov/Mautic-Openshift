@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  gather_facts: no
+  vars:
+    APP_LABEL: mautic
+    GIT_REF: mautic3
+    GIT_REPO: https://github.com/patricksimonian/mautic-openshift
+  tasks:
+  - shell: >
+      oc delete all,pvc,secret -l deploymentConfig={{ APP_LABEL }} -n pltfrm-tools
+    name: delete objects
+  - shell: >
+      oc process -f ./openshift/mautic.yaml -p NAME={{ APP_LABEL }} -p GIT_REF={{ GIT_REF }} -p GIT_REPO={{ GIT_REPO }} |
+      oc apply -f - -n pltfrm-tools
+    name: Create objects
+    
+  - shell: >
+      oc rollout latest dc/{{ APP_LABEL }}-db -n pltfrm-tools &&
+      oc rollout latest dc/{{ APP_LABEL }} -n pltfrm-tools
+    name: Rollout objects
+    
