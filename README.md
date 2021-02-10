@@ -78,4 +78,15 @@ A `New Segment Email` can be set up under the `Channels` tab. For a basic layout
 
 ## Argo
 
-argo submit argo/mautic.build.yaml -p BRANCH='argo' -p REPO='https://github.com/patricksimonian/mautic-openshift' -p  TOOLS_NAMESPACE='de0974-tools' -p DEV_NAMESPACE='de0974-dev' -p TEST_NAMESPACE='de0974-test' -p PROD_NAMESPACE='de0974-prod' -p SUFFIX='-test' -p NAME='mautic-test' -p IMAGE_TAG='test' -p STORAGE_CLASS_NAME='netapp-file-standard'
+To build in the tools namespace and deploy to the dev namespace using the argo pipeline, use the following command:
+
+```argo submit argo/mautic.build.yaml -p BRANCH=<branch-name> -p REPO=https://github.com/<git-account>/<git-repo> -p  TOOLS_NAMESPACE=<tools-namespace> -p DEV_NAMESPACE=<dev-namespace> -p SUFFIX=<suffix> -p NAME=<app-name> -p IMAGE_TAG=<image-tag> -p STORAGE_CLASS_NAME=<storage-class-name> -p HOST_ADDRESS=<host-address>```
+
+- Example: ```argo submit argo/mautic.build.yaml -p BRANCH='main' -p REPO='https://github.com/bcgov/mautic-openshift/' -p  TOOLS_NAMESPACE='de0974-tools' -p DEV_NAMESPACE='de0974-dev' -p SUFFIX='-test' -p NAME='mautic-test' -p IMAGE_TAG='test' -p STORAGE_CLASS_NAME='netapp-file-standard' -p HOST_ADDRESS=apps.silver.devops.gov.bc.ca```
+
+
+To deploy to other namespaces after the build:
+
+```argo submit argo/mautic.promote.yaml -p BRANCH=<branch-name> -p REPO=https://github.com/<git-account>/<git-repo> -p TOOLS_NAMESPACE=<tools-namespace> -p DEV_NAMESPACE=<dev-namespace> -p TEST_NAMESPACE=<test-namespace> -p PROD_NAMESPACE=<prod-namespace> -p SUFFIX=<suffix> -p NAME=<app-name> -p IMAGE_TAG=<image-tag> -p STORAGE_CLASS_NAME=<storage-class-name> -p HOST_ADDRESS=<host-address>```
+
+- Example: ```argo submit argo/mautic.build.yaml -p BRANCH='main' -p REPO='https://github.com/bcgov/mautic-openshift/' -p TOOLS_NAMESPACE='de0974-tools' -p DEV_NAMESPACE='de0974-dev' -p TEST_NAMESPACE='de0974-test' -p PROD_NAMESPACE='de0974-prod' -p SUFFIX='-test' -p NAME='mautic-test' -p IMAGE_TAG='test' -p STORAGE_CLASS_NAME='netapp-file-standard' -p HOST_ADDRESS=apps.silver.devops.gov.bc.ca```
