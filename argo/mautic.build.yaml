@@ -66,7 +66,7 @@ spec:
             -p GIT_REF={{workflow.parameters.BRANCH}}
             -p GIT_REPO={{workflow.parameters.REPO}}
             -p NAMESPACE={{workflow.parameters.TOOLS_NAMESPACE}}
-            -p HOSTADDRESS=apps.silver.devops.gov.bc.ca
+            -p HOSTADDRESS={{workflow.parameters.HOST_ADDRESS}}
             | oc apply -f - -n {{workflow.parameters.TOOLS_NAMESPACE}};
             oc start-build -w {{workflow.parameters.NAME}};
             oc tag {{workflow.parameters.TOOLS_NAMESPACE}}/{{workflow.parameters.NAME}}:{{workflow.parameters.IMAGE_TAG}}
@@ -100,10 +100,6 @@ spec:
             oc delete route {{workflow.parameters.NAME}};
             oc process -f ./openshift/secret.yaml 
             -p NAME={{workflow.parameters.NAME}}
-            -p DATABASE_USER=mautic_db_test 
-            -p DATABASE_NAME=mautic_db 
-            -p DATABASE_USER_PASSWORD=password 
-            -p DATABASE_ROOT_PASSWORD=password2
             | oc apply -f - -n {{workflow.parameters.DEV_NAMESPACE}};
             oc process -f ./openshift/mautic.dc.yaml 
             -p NAME={{workflow.parameters.NAME}} 
