@@ -76,7 +76,7 @@ Under the `Actions` tab, a new submit action to `Modify contact segments` should
 A `New Segment Email` can be set up under the `Channels` tab. For a basic layout the Blank theme can be used. The contents of the email can be set in the `builder`.
 
 
-## Argo
+## CI/CD Argo
 
 To build in the tools namespace and deploy to the dev namespace using the argo pipeline, use the following command:
 
