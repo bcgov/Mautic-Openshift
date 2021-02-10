@@ -1,0 +1,93 @@
+kind: Template
+apiVersion: v1
+objects:
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    spec:
+      failedBuildsHistoryLimit: 5
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: '${NAME}:${IMAGE_TAG}'
+      postCommit: {}
+      resources: {}
+      runPolicy: Serial
+      source:
+        contextDir: apache
+        git:
+          ref: ${GIT_REF}
+          uri: ${GIT_REPO}
+        type: Git
+      strategy:
+        dockerStrategy:
+          dockerfilePath: Dockerfile
+        type: Docker
+      successfulBuildsHistoryLimit: 5
+      triggers:
+        - generic:
+            secretReference:
+              name: ${NAME}-generic-webhook-secret
+          type: Generic
+        - github:
+            secretReference:
+              name: ${NAME}-github-webhook-secret
+          type: GitHub
+        - type: ConfigChange
+    metadata: 
+      annotations:
+        app.openshift.io/vcs-ref: ${GIT_REF}
+        app.openshift.io/vcs-uri: ${GIT_REPO}
+        openshift.io/generated-by: OpenShiftWebConsole
+      labels:
+        app: ${NAME}
+        group: ${NAME}
+        buildConfig: ${NAME}
+        app.kubernetes.io/component: ${NAME}
+        app.kubernetes.io/instance: ${NAME}
+        app.kubernetes.io/part-of: ${NAME}-app
+      name: ${NAME}
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    spec:
+      lookupPolicy:
+        local: false
+    metadata:
+      annotations:
+        app.openshift.io/vcs-ref: ${GIT_REF}
+        app.openshift.io/vcs-uri: ${GIT_REPO}
+        openshift.io/generated-by: OpenShiftWebConsole
+      generation: 1
+      labels:
+        app: ${NAME}
+        buildConfig: ${NAME}
+        app.kubernetes.io/component: ${NAME}
+        app.kubernetes.io/instance: ${NAME}
+        app.kubernetes.io/part-of: ${NAME}-app
+      name: ${NAME}
+  
+parameters:
+- name: NAME
+  displayName: name
+  description: the value used to group components by a common name
+  value: mautic
+- name: GIT_REF
+  displayName: Git Branch
+  description: the git branch to build from
+  value: main 
+- name: GIT_REPO
+  displayName: Git repository
+  description: the git repo to build from
+  value: https://github.com/patricksimonian/mautic-openshift
+- name: NAMESPACE
+  displayName: Namespace
+  description: the namespace of the app
+  value: de0974-tools
+- name: HOSTADDRESS
+  displayName: Host name
+  description: The cluster host address
+  value: apps.silver.devops.gov.bc.ca
+- description: A name used for all objects
+  displayName: IMAGE_TAG
+  name: IMAGE_TAG
+  required: true

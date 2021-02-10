@@ -12,7 +12,7 @@ objects:
       resources:
         requests:
           storage: 1Gi
-      storageClassName: netapp-file-standard
+      storageClassName: ${STORAGE_CLASS_NAME}
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
@@ -24,32 +24,7 @@ objects:
       resources:
         requests:
           storage: 1Gi
-      storageClassName: netapp-file-standard
-  - apiVersion: v1
-    kind: Service
-    spec:
-      ports:
-        - name: 8080-tcp
-          port: 8080
-          protocol: TCP
-          targetPort: 8080
-      selector:
-        deploymentconfig: ${NAME}
-      sessionAffinity: None
-      type: ClusterIP
-    metadata:
-      annotations:
-        app.openshift.io/vcs-ref: main
-        app.openshift.io/vcs-uri: ${GIT_REPO}
-        openshift.io/generated-by: OpenShiftWebConsole
-      labels:
-        app: ${NAME}
-        deploymentConfig: ${NAME}
-        app.kubernetes.io/component: ${NAME}
-        app.kubernetes.io/instance: ${NAME}
-        app.kubernetes.io/part-of: ${NAME}-app
-      name: ${NAME}
-
+      storageClassName: ${STORAGE_CLASS_NAME}
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     spec:
@@ -102,7 +77,7 @@ objects:
                 - name: MAUTIC_DB_PORT
                   value: "3306"
               image: >-
-                image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/${NAME}
+                image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/${NAME}:${IMAGE_TAG}
               imagePullPolicy: Always
               name: ${NAME}
               resources:
@@ -137,79 +112,11 @@ objects:
         app.openshift.io/vcs-ref: main
         app.openshift.io/vcs-uri: ${GIT_REPO}
         deployment.kubernetes.io/revision: '11'
-        image.openshift.io/triggers: >-
-          [{"from":{"kind":"ImageStreamTag","name":"mautic-openshift:latest","namespace":"${NAMESPACE}"},"fieldPath":"spec.template.spec.containers[?(@.name==\"mautic-openshift\")].image","pause":"false"}]
-        kubectl.kubernetes.io/last-applied-configuration: >
-          {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"alpha.image.policy.openshift.io/resolve-names":"*","app.openshift.io/vcs-ref":"main","app.openshift.io/vcs-uri":${GIT_REPO},"deployment.kubernetes.io/revision":"2","image.openshift.io/triggers":"[{\"from\":{\"kind\":\"ImageStreamTag\",\"name\":\"mautic-openshift:latest\",\"namespace\":\"${NAMESPACE}\"},\"fieldPath\":\"spec.template.spec.containers[?(@.name==\\\"mautic-openshift\\\")].image\",\"pause\":\"false\"}]","openshift.io/generated-by":"OpenShiftWebConsole"},"generation":4,"labels":{"app":"mautic-openshift","app.kubernetes.io/component":"mautic-openshift","app.kubernetes.io/instance":"mautic-openshift","app.kubernetes.io/part-of":"mautic-app"},"managedFields":[{"apiVersion":"apps/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"mautic-openshift\"}":{"f:image":{}}}}}}},"manager":"openshift-controller-manager","operation":"Update","time":"2020-11-16T18:39:27Z"},{"apiVersion":"apps/v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:alpha.image.policy.openshift.io/resolve-names":{},"f:app.openshift.io/vcs-ref":{},"f:app.openshift.io/vcs-uri":{},"f:image.openshift.io/triggers":{},"f:openshift.io/generated-by":{}},"f:labels":{".":{},"f:app":{},"f:app.kubernetes.io/component":{},"f:app.kubernetes.io/instance":{},"f:app.kubernetes.io/part-of":{}}},"f:spec":{"f:progressDeadlineSeconds":{},"f:replicas":{},"f:revisionHistoryLimit":{},"f:selector":{"f:matchLabels":{".":{},"f:app":{}}},"f:strategy":{"f:rollingUpdate":{".":{},"f:maxSurge":{},"f:maxUnavailable":{}},"f:type":{}},"f:template":{"f:metadata":{"f:labels":{".":{},"f:app":{},"f:deploymentconfig":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"mautic-openshift\"}":{".":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:terminationGracePeriodSeconds":{}}}}},"manager":"Mozilla","operation":"Update","time":"2020-11-16T19:18:08Z"},{"apiVersion":"apps/v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{"f:deployment.kubernetes.io/revision":{}}},"f:status":{"f:conditions":{".":{},"k:{\"type\":\"Available\"}":{".":{},"f:lastTransitionTime":{},"f:lastUpdateTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"Progressing\"}":{".":{},"f:lastTransitionTime":{},"f:lastUpdateTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}},"f:observedGeneration":{},"f:replicas":{},"f:unavailableReplicas":{},"f:updatedReplicas":{}}},"manager":"kube-controller-manager","operation":"Update","time":"2020-11-16T19:18:08Z"}],"name":"mautic-openshift","namespace":"${NAMESPACE}"},"spec":{"progressDeadlineSeconds":600,"replicas":1,"revisionHistoryLimit":10,"selector":{"matchLabels":{"app":"mautic-openshift"}},"strategy":{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":"25%"},"type":"RollingUpdate"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"mautic-openshift","deploymentconfig":"mautic-openshift"}},"spec":{"containers":[{"env":[{"name":"MAUTIC_DB_HOST","value":"mariadb"},{"name":"MAUTIC_DB_USER","value":"mautic"},{"name":"MAUTIC_DB_NAME","value":"mautic"},{"name":"MAUTIC_DB_PASSWORD","value":"mautic"}],"image":"image-registry.openshift-image-registry.svc:5000/pltfrm-tools/mautic-openshift@sha256:be2cd008c24742f25a968af90d5970313243332d9cdd164e1dc8944f6d06af4b","imagePullPolicy":"Always","name":"mautic-openshift","resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File"}],"dnsPolicy":"ClusterFirst","restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":30}}}}
         openshift.io/generated-by: OpenShiftWebConsole
       generation: 11
       labels:
         app: ${NAME}
         deploymentConfig: ${NAME}
-        app.kubernetes.io/component: ${NAME}
-        app.kubernetes.io/instance: ${NAME}
-        app.kubernetes.io/part-of: ${NAME}-app
-      name: ${NAME}
-  - apiVersion: build.openshift.io/v1
-    kind: BuildConfig
-    spec:
-      failedBuildsHistoryLimit: 5
-      nodeSelector: null
-      output:
-        to:
-          kind: ImageStreamTag
-          name: '${NAME}:latest'
-      postCommit: {}
-      resources: {}
-      runPolicy: Serial
-      source:
-        contextDir: apache
-        git:
-          ref: ${GIT_REF}
-          uri: ${GIT_REPO}
-        type: Git
-      strategy:
-        dockerStrategy:
-          dockerfilePath: Dockerfile
-        type: Docker
-      successfulBuildsHistoryLimit: 5
-      triggers:
-        - generic:
-            secretReference:
-              name: ${NAME}-generic-webhook-secret
-          type: Generic
-        - github:
-            secretReference:
-              name: ${NAME}-github-webhook-secret
-          type: GitHub
-        - type: ConfigChange
-    metadata: 
-      annotations:
-        app.openshift.io/vcs-ref: main
-        app.openshift.io/vcs-uri: ${GIT_REPO}
-        openshift.io/generated-by: OpenShiftWebConsole
-      labels:
-        app: ${NAME}
-        group: ${NAME}
-        buildConfig: ${NAME}
-        app.kubernetes.io/component: ${NAME}
-        app.kubernetes.io/instance: ${NAME}
-        app.kubernetes.io/part-of: ${NAME}-app
-      name: ${NAME}
-  - apiVersion: image.openshift.io/v1
-    kind: ImageStream
-    spec:
-      lookupPolicy:
-        local: false
-    metadata:
-      annotations:
-        app.openshift.io/vcs-ref: main
-        app.openshift.io/vcs-uri: ${GIT_REPO}
-        openshift.io/generated-by: OpenShiftWebConsole
-      generation: 1
-      labels:
-        app: ${NAME}
-        buildConfig: ${NAME}
         app.kubernetes.io/component: ${NAME}
         app.kubernetes.io/instance: ${NAME}
         app.kubernetes.io/part-of: ${NAME}-app
@@ -235,6 +142,30 @@ objects:
         app.kubernetes.io/instance: ${NAME}
         app.kubernetes.io/part-of: ${NAME}-app
       name: ${NAME}
+  - apiVersion: v1
+    kind: Service
+    spec:
+      ports:
+        - name: 8080-tcp
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+      selector:
+        deploymentconfig: ${NAME}
+      sessionAffinity: None
+      type: ClusterIP
+    metadata:
+      annotations:
+        app.openshift.io/vcs-ref: ${GIT_REF}
+        app.openshift.io/vcs-uri: ${GIT_REPO}
+        openshift.io/generated-by: OpenShiftWebConsole
+      labels:
+        app: ${NAME}
+        deploymentConfig: ${NAME}
+        app.kubernetes.io/component: ${NAME}
+        app.kubernetes.io/instance: ${NAME}
+        app.kubernetes.io/part-of: ${NAME}-app
+      name: ${NAME} 
   - kind: ConfigMap
     apiVersion: v1
     metadata:
@@ -348,8 +279,7 @@ objects:
                     secretKeyRef:
                       key: database-name
                       name: ${NAME}-db
-              image: >-
-                image-registry.openshift-image-registry.svc:5000/openshift/mariadb@sha256:e3e8e56268c7c963a368457d92759f328796a99332a277c766767c5302fb0793
+              image: registry.redhat.io/rhel8/mariadb-103
               imagePullPolicy: IfNotPresent
               livenessProbe:
                 failureThreshold: 3
@@ -385,6 +315,8 @@ objects:
               volumeMounts:
                 - mountPath: /var/lib/mysql/data
                   name: ${NAME}-mariadb-data
+                - mountPath: /var/lib/mysql
+                  name: ${NAME}-mariadb-docker
           dnsPolicy: ClusterFirst
           restartPolicy: Always
           schedulerName: default-scheduler
@@ -394,20 +326,9 @@ objects:
             - persistentVolumeClaim:
                 claimName: ${NAME}-mariadb-data
               name: ${NAME}-mariadb-data
+            - name: ${NAME}-mariadb-docker
+              emptyDir: {}
       test: false
-      triggers:
-        - imageChangeParams:
-            automatic: true
-            containerNames:
-              - mariadb
-            from:
-              kind: ImageStreamTag
-              name: 'mariadb:10.2'
-              namespace: openshift
-            lastTriggeredImage: >-
-              image-registry.openshift-image-registry.svc:5000/openshift/mariadb@sha256:e3e8e56268c7c963a368457d92759f328796a99332a277c766767c5302fb0793
-          type: ImageChange
-        - type: ConfigChange
     metadata:
       annotations:
         app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"${NAME}"}]'
@@ -419,7 +340,6 @@ objects:
         group: ${NAME}
         app: ${NAME}
       name: ${NAME}-db
-  
 parameters:
 - name: NAME
   displayName: name
@@ -436,8 +356,15 @@ parameters:
 - name: NAMESPACE
   displayName: Namespace
   description: the namespace of the app
-  value: de0974-tools
 - name: HOSTADDRESS
   displayName: Host name
   description: The cluster host address
   value: apps.silver.devops.gov.bc.ca
+- description: A name used for all objects
+  displayName: IMAGE_TAG
+  name: IMAGE_TAG
+  required: true
+- description: A name used for all objects
+  displayName: STORAGE_CLASS_NAME
+  name: STORAGE_CLASS_NAME
+  required: true
