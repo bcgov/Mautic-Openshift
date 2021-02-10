@@ -70,23 +70,23 @@ parameters:
 - name: NAME
   displayName: name
   description: the value used to group components by a common name
-  value: mautic
+  required: true
 - name: GIT_REF
   displayName: Git Branch
   description: the git branch to build from
-  value: main 
+  required: true
 - name: GIT_REPO
   displayName: Git repository
   description: the git repo to build from
-  value: https://github.com/patricksimonian/mautic-openshift
+  required: true
 - name: NAMESPACE
   displayName: Namespace
   description: the namespace of the app
-  value: de0974-tools
+  required: true
 - name: HOSTADDRESS
   displayName: Host name
   description: The cluster host address
-  value: apps.silver.devops.gov.bc.ca
+  required: true
 - description: A name used for all objects
   displayName: IMAGE_TAG
   name: IMAGE_TAG
