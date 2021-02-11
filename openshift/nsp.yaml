@@ -1,5 +1,7 @@
 kind: Template
 apiVersion: v1
+parameters:
+  - name: NAMESPACE
 objects:
   - apiVersion: security.devops.gov.bc.ca/v1alpha1
     kind: NetworkSecurityPolicy

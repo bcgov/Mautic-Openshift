@@ -133,7 +133,7 @@ objects:
                   value: ${MAUTIC_DB_SECRET_NAME}
                 - name: MAUTIC_DB_PORT
                   value: "3306"
-              image: ${NAMESPACE}/${NAME}:${IMAGE_TAG}
+              image: ${IMAGE_REGISTRY}/${NAMESPACE}/${NAME}:${IMAGE_TAG}
               imagePullPolicy: Always
               name: ${NAME}
               resources:
@@ -430,6 +430,11 @@ parameters:
   name: IMAGE_TAG
   required: true
   value: apps.silver.devops.gov.bc.ca
+- description: registry where mautic is found/stored
+  displayName: Image Registry
+  name: IMAGE_REGISTRY
+  required: true
+  value: image-registry.openshift-image-registry.svc:5000
 - description: A name used for all objects
   displayName: STORAGE_CLASS_NAME
   name: STORAGE_CLASS_NAME
