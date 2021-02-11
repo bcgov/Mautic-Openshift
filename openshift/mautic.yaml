@@ -25,14 +25,6 @@ objects:
         type: Docker
       successfulBuildsHistoryLimit: 5
       triggers:
-        - generic:
-            secretReference:
-              name: ${NAME}-generic-webhook-secret
-          type: Generic
-        - github:
-            secretReference:
-              name: ${NAME}-github-webhook-secret
-          type: GitHub
         - type: ConfigChange
     metadata: 
       annotations:

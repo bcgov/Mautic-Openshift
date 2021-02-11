@@ -21,7 +21,7 @@ To Run:
         -p GIT_REPO=https://github.com/bcgov/mautic-openshift \
         -p NAMESPACE=<namespace> \
         -p STORAGE_CLASS_NAME=netapp-file-standard \
-        -p IMAGE_TAG=latest \
+        -p IMAGE_TAG=3.1.2 \
         -p MAUTIC_DB_SECRET_NAME=mautic-db |
         oc apply -f - -n <namespace>
 
