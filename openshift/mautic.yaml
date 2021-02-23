@@ -1,6 +1,63 @@
 kind: Template
 apiVersion: v1
 objects:
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    spec:
+      failedBuildsHistoryLimit: 5
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: '${NAME}:${IMAGE_TAG}'
+      postCommit: {}
+      resources: {}
+      runPolicy: Serial
+      source:
+        contextDir: apache
+        git:
+          ref: ${GIT_REF}
+          uri: ${GIT_REPO}
+        type: Git
+      strategy:
+        dockerStrategy:
+          dockerfilePath: Dockerfile
+        type: Docker
+      successfulBuildsHistoryLimit: 5
+      triggers:
+        - type: ConfigChange
+    metadata: 
+      annotations:
+        app.openshift.io/vcs-ref: ${GIT_REF}
+        app.openshift.io/vcs-uri: ${GIT_REPO}
+        openshift.io/generated-by: OpenShiftWebConsole
+      labels:
+        app: ${NAME}
+        group: ${NAME}
+        buildConfig: ${NAME}
+        app.kubernetes.io/component: ${NAME}
+        app.kubernetes.io/instance: ${NAME}
+        app.kubernetes.io/part-of: ${NAME}-app
+      name: ${NAME}
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    spec:
+      lookupPolicy:
+        local: false
+    metadata:
+      annotations:
+        app.openshift.io/vcs-ref: ${GIT_REF}
+        app.openshift.io/vcs-uri: ${GIT_REPO}
+        openshift.io/generated-by: OpenShiftWebConsole
+      generation: 1
+      labels:
+        app: ${NAME}
+        buildConfig: ${NAME}
+        app.kubernetes.io/component: ${NAME}
+        app.kubernetes.io/instance: ${NAME}
+        app.kubernetes.io/part-of: ${NAME}-app
+      name: ${NAME}
+  
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
@@ -61,23 +118,22 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       key: database-user
-                      name: ${NAME}-db
+                      name: ${MAUTIC_DB_SECRET_NAME}
                 - name: MAUTIC_DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       key: database-password
-                      name: ${NAME}-db
+                      name: ${MAUTIC_DB_SECRET_NAME}
                 - name: MAUTIC_DB_NAME
                   valueFrom:
                     secretKeyRef:
                       key: database-name
-                      name: ${NAME}-db
+                      name: ${MAUTIC_DB_SECRET_NAME}
                 - name: MAUTIC_DB_HOST
-                  value: ${NAME}-db
+                  value: ${MAUTIC_DB_SECRET_NAME}
                 - name: MAUTIC_DB_PORT
                   value: "3306"
-              image: >-
-                image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/${NAME}:${IMAGE_TAG}
+              image: ${IMAGE_REGISTRY}/${NAMESPACE}/${NAME}:${IMAGE_TAG}
               imagePullPolicy: Always
               name: ${NAME}
               resources:
@@ -106,6 +162,15 @@ objects:
           schedulerName: default-scheduler
           securityContext: {}
           terminationGracePeriodSeconds: 30
+          triggers:
+          - imageChangeParams:
+            containerNames:
+            - ${NAME}
+            from:
+              kind: ImageStreamTag
+              name: ${NAME}:${IMAGE_TAG}
+              namespace: ${NAMESPACE}
+          type: ImageChange
     metadata:
       annotations:
         alpha.image.policy.openshift.io/resolve-names: '*'
@@ -124,7 +189,6 @@ objects:
   - apiVersion: route.openshift.io/v1
     kind: Route
     spec:
-      host: ${NAME}-${NAMESPACE}.${HOSTADDRESS}
       port:
         targetPort: 8080-tcp
       to:
@@ -345,6 +409,11 @@ parameters:
   displayName: name
   description: the value used to group components by a common name
   required: true
+- name: MAUTIC_DB_SECRET_NAME
+  displayName: Mautic Database Secret Name
+  description: the secret name for the mautic db credentials
+  required: true
+  value: mautic-db
 - name: GIT_REF
   displayName: Git Branch
   description: the git branch to build from
@@ -356,14 +425,16 @@ parameters:
 - name: NAMESPACE
   displayName: Namespace
   description: the namespace of the app
-- name: HOSTADDRESS
-  displayName: Host name
-  description: The cluster host address
-  value: apps.silver.devops.gov.bc.ca
 - description: A name used for all objects
   displayName: IMAGE_TAG
   name: IMAGE_TAG
   required: true
+  value: apps.silver.devops.gov.bc.ca
+- description: registry where mautic is found/stored
+  displayName: Image Registry
+  name: IMAGE_REGISTRY
+  required: true
+  value: image-registry.openshift-image-registry.svc:5000
 - description: A name used for all objects
   displayName: STORAGE_CLASS_NAME
   name: STORAGE_CLASS_NAME

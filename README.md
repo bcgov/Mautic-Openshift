@@ -4,7 +4,7 @@ To Run:
 
 1. **Process and apply the mariadb secret.yaml**
 
-    Secret values are generated if not passed in: ```oc process -f ./openshift/secret.yaml | oc apply -f - -n <namespace>```
+    Secret values are generated if not passed in: ```oc process -f ./openshift/secret.yaml -p NAME=<name> | oc apply -f - -n <namespace>```
 
     - Example: ```oc process -f ./openshift/secret.yaml | oc apply -f - -n pltfrm-tools```
 
@@ -14,7 +14,18 @@ To Run:
     - Example: ```oc process -f ./openshift/secret.yaml -p NAME=mautic -p DATABASE_USER=mautic_db_test -p DATABASE_NAME=mautic_db -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2 | oc apply -f - -n pltfrm-tools```
 
 2. **Process and apply the mautic.yaml**
+    ```
+        oc process -f ./openshift/mautic.yaml \
+        -p NAME=mautic \
+        -p GIT_REF=main \
+        -p GIT_REPO=https://github.com/bcgov/mautic-openshift \
+        -p NAMESPACE=<namespace> \
+        -p STORAGE_CLASS_NAME=netapp-file-standard \
+        -p IMAGE_TAG=3.1.2 \
+        -p MAUTIC_DB_SECRET_NAME=mautic-db |
+        oc apply -f - -n <namespace>
 
+    ```
     ```oc process -f ./openshift/mautic.yaml -p NAME=<app-name> -p GIT_REF=<branch-name> -p GIT_REPO=https://github.com/<git-account>/<git-repo> -p NAMESPACE=<namespace> -p HOSTADDRESS=<host-address> | oc apply -f - -n <namespace>```
 
     - Example: ```oc process -f ./openshift/mautic.yaml -p NAME=mautic -p GIT_REF=mautic3 -p GIT_REPO=https://github.com/patricksimonian/mautic-openshift -p NAMESPACE=pltfrm-tools -p HOSTADDRESS=apps.pathfinder.aro.devops.gov.bc.ca | oc apply -f - -n pltfrm-tools```
