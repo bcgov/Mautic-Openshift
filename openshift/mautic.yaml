@@ -9,7 +9,7 @@ objects:
       output:
         to:
           kind: ImageStreamTag
-          name: '${NAME}:${IMAGE_TAG}'
+          name: '${APP_NAME}:${IMAGE_TAG}'
       postCommit: {}
       resources: {}
       runPolicy: Serial
@@ -32,13 +32,13 @@ objects:
         app.openshift.io/vcs-uri: ${GIT_REPO}
         openshift.io/generated-by: OpenShiftWebConsole
       labels:
-        app: ${NAME}
-        group: ${NAME}
-        buildConfig: ${NAME}
-        app.kubernetes.io/component: ${NAME}
-        app.kubernetes.io/instance: ${NAME}
-        app.kubernetes.io/part-of: ${NAME}-app
-      name: ${NAME}
+        app: ${APP_NAME}
+        group: ${APP_NAME}
+        buildConfig: ${APP_NAME}
+        app.kubernetes.io/component: ${APP_NAME}
+        app.kubernetes.io/instance: ${APP_NAME}
+        app.kubernetes.io/part-of: ${APP_NAME}-app
+      name: ${APP_NAME}
   - apiVersion: image.openshift.io/v1
     kind: ImageStream
     spec:
@@ -51,17 +51,17 @@ objects:
         openshift.io/generated-by: OpenShiftWebConsole
       generation: 1
       labels:
-        app: ${NAME}
-        buildConfig: ${NAME}
-        app.kubernetes.io/component: ${NAME}
-        app.kubernetes.io/instance: ${NAME}
-        app.kubernetes.io/part-of: ${NAME}-app
-      name: ${NAME}
+        app: ${APP_NAME}
+        buildConfig: ${APP_NAME}
+        app.kubernetes.io/component: ${APP_NAME}
+        app.kubernetes.io/instance: ${APP_NAME}
+        app.kubernetes.io/part-of: ${APP_NAME}-app
+      name: ${APP_NAME}
   
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
-      name: ${NAME}-php-config
+      name: ${APP_NAME}-php-config
     spec:
       accessModes: 
       - ReadWriteOnce
@@ -73,7 +73,7 @@ objects:
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
-      name: ${NAME}-mariadb-data
+      name: ${APP_NAME}-mariadb-data
     spec:
       accessModes: 
       - ReadWriteOnce
@@ -89,53 +89,53 @@ objects:
       replicas: 1
       revisionHistoryLimit: 10
       selector:
-        deploymentconfig: ${NAME}
+        deploymentconfig: ${APP_NAME}
       strategy:
         type: Rolling
       template:
         metadata:
           creationTimestamp: null
           labels:
-            app: ${NAME}
-            deploymentconfig: ${NAME}
+            app: ${APP_NAME}
+            deploymentconfig: ${APP_NAME}
         spec:
           volumes:
-          - name: ${NAME}-cache
+          - name: ${APP_NAME}-cache
             emptyDir: {}
-          - name: ${NAME}-logs
+          - name: ${APP_NAME}-logs
             emptyDir: {}
-          - name: ${NAME}-php-config
+          - name: ${APP_NAME}-php-config
             persistentVolumeClaim:
-              claimName: ${NAME}-php-config
-          - name: ${NAME}-cache-unsubscribe
+              claimName: ${APP_NAME}-php-config
+          - name: ${APP_NAME}-cache-unsubscribe
             emptyDir: {}
-          - name: ${NAME}-apache-conf
+          - name: ${APP_NAME}-apache-conf
             configMap:
-              name: ${NAME}-apache-config
+              name: ${APP_NAME}-apache-config
           containers:
             - env:
                 - name: MAUTIC_DB_USER
                   valueFrom:
                     secretKeyRef:
                       key: database-user
-                      name: ${MAUTIC_DB_SECRET_NAME}
+                      name: ${APP_NAME}-db
                 - name: MAUTIC_DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       key: database-password
-                      name: ${MAUTIC_DB_SECRET_NAME}
+                      name: ${APP_NAME}-db
                 - name: MAUTIC_DB_NAME
                   valueFrom:
                     secretKeyRef:
                       key: database-name
-                      name: ${MAUTIC_DB_SECRET_NAME}
+                      name: ${APP_NAME}-db
                 - name: MAUTIC_DB_HOST
-                  value: ${MAUTIC_DB_SECRET_NAME}
+                  value: ${APP_NAME}-db
                 - name: MAUTIC_DB_PORT
                   value: "3306"
-              image: ${IMAGE_REGISTRY}/${NAMESPACE}/${NAME}:${IMAGE_TAG}
+              image: ${IMAGE_REGISTRY}/${NAMESPACE}/${APP_NAME}:${IMAGE_TAG}
               imagePullPolicy: Always
-              name: ${NAME}
+              name: ${APP_NAME}
               resources:
                 cpu:
                   requests: 1000m
@@ -143,19 +143,19 @@ objects:
               terminationMessagePath: /dev/termination-log
               terminationMessagePolicy: File
               volumeMounts:
-                - name: ${NAME}-apache-conf
+                - name: ${APP_NAME}-apache-conf
                   mountPath: /etc/apache2/sites-enabled/000-default.conf
                   subPath: 000-default.conf
-                - name: ${NAME}-apache-conf
+                - name: ${APP_NAME}-apache-conf
                   mountPath: /etc/apache2/ports.conf
                   subPath: ports.conf
-                - name: ${NAME}-cache
+                - name: ${APP_NAME}-cache
                   mountPath: /var/www/html/var/cache/
-                - name: ${NAME}-logs
+                - name: ${APP_NAME}-logs
                   mountPath: /var/www/html/var/logs/
-                - name: ${NAME}-php-config
+                - name: ${APP_NAME}-php-config
                   mountPath: /var/www/html/app/config/
-                - name: ${NAME}-cache-unsubscribe
+                - name: ${APP_NAME}-cache-unsubscribe
                   mountPath: /var/www/html/app/../var/tmp/twig/
           dnsPolicy: ClusterFirst
           restartPolicy: Always
@@ -165,10 +165,10 @@ objects:
           triggers:
           - imageChangeParams:
             containerNames:
-            - ${NAME}
+            - ${APP_NAME}
             from:
               kind: ImageStreamTag
-              name: ${NAME}:${IMAGE_TAG}
+              name: ${APP_NAME}:${IMAGE_TAG}
               namespace: ${NAMESPACE}
           type: ImageChange
     metadata:
@@ -180,12 +180,12 @@ objects:
         openshift.io/generated-by: OpenShiftWebConsole
       generation: 11
       labels:
-        app: ${NAME}
-        deploymentConfig: ${NAME}
-        app.kubernetes.io/component: ${NAME}
-        app.kubernetes.io/instance: ${NAME}
-        app.kubernetes.io/part-of: ${NAME}-app
-      name: ${NAME}
+        app: ${APP_NAME}
+        deploymentConfig: ${APP_NAME}
+        app.kubernetes.io/component: ${APP_NAME}
+        app.kubernetes.io/instance: ${APP_NAME}
+        app.kubernetes.io/part-of: ${APP_NAME}-app
+      name: ${APP_NAME}
   - apiVersion: route.openshift.io/v1
     kind: Route
     spec:
@@ -193,19 +193,19 @@ objects:
         targetPort: 8080-tcp
       to:
         kind: Service
-        name: ${NAME}
+        name: ${APP_NAME}
         weight: 100
       wildcardPolicy: None
     metadata:
       annotations:
         openshift.io/host.generated: 'true'
       labels:
-        app: ${NAME}
-        deploymentConfig: ${NAME}
-        app.kubernetes.io/component: ${NAME}
-        app.kubernetes.io/instance: ${NAME}
-        app.kubernetes.io/part-of: ${NAME}-app
-      name: ${NAME}
+        app: ${APP_NAME}
+        deploymentConfig: ${APP_NAME}
+        app.kubernetes.io/component: ${APP_NAME}
+        app.kubernetes.io/instance: ${APP_NAME}
+        app.kubernetes.io/part-of: ${APP_NAME}-app
+      name: ${APP_NAME}
   - apiVersion: v1
     kind: Service
     spec:
@@ -215,7 +215,7 @@ objects:
           protocol: TCP
           targetPort: 8080
       selector:
-        deploymentconfig: ${NAME}
+        deploymentconfig: ${APP_NAME}
       sessionAffinity: None
       type: ClusterIP
     metadata:
@@ -224,24 +224,24 @@ objects:
         app.openshift.io/vcs-uri: ${GIT_REPO}
         openshift.io/generated-by: OpenShiftWebConsole
       labels:
-        app: ${NAME}
-        deploymentConfig: ${NAME}
-        app.kubernetes.io/component: ${NAME}
-        app.kubernetes.io/instance: ${NAME}
-        app.kubernetes.io/part-of: ${NAME}-app
-      name: ${NAME} 
+        app: ${APP_NAME}
+        deploymentConfig: ${APP_NAME}
+        app.kubernetes.io/component: ${APP_NAME}
+        app.kubernetes.io/instance: ${APP_NAME}
+        app.kubernetes.io/part-of: ${APP_NAME}-app
+      name: ${APP_NAME} 
   - kind: ConfigMap
     apiVersion: v1
     metadata:
       annotations:
         openshift.io/host.generated: 'true'
       labels:
-        app: ${NAME}
-        deploymentConfig: ${NAME}
-        app.kubernetes.io/component: ${NAME}
-        app.kubernetes.io/instance: ${NAME}
-        app.kubernetes.io/part-of: ${NAME}-app
-      name: ${NAME}-apache-config
+        app: ${APP_NAME}
+        deploymentConfig: ${APP_NAME}
+        app.kubernetes.io/component: ${APP_NAME}
+        app.kubernetes.io/instance: ${APP_NAME}
+        app.kubernetes.io/part-of: ${APP_NAME}-app
+      name: ${APP_NAME}-apache-config
     data:
       000-default.conf: |
         <VirtualHost *:80>
@@ -286,29 +286,29 @@ objects:
     kind: Service
     spec:
       ports:
-        - name: ${NAME}-db
+        - name: ${APP_NAME}-db
           port: 3306
           protocol: TCP
           targetPort: 3306
       selector:
-        name: ${NAME}-db
+        name: ${APP_NAME}-db
       sessionAffinity: None
       type: ClusterIP
     metadata:
       annotations:
         template.openshift.io/expose-uri: 'mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="mariadb")].port}'
       labels:
-        app: ${NAME}
-        deploymentConfig: ${NAME}-db
-        group: ${NAME}
-      name: ${NAME}-db
+        app: ${APP_NAME}
+        deploymentConfig: ${APP_NAME}-db
+        group: ${APP_NAME}
+      name: ${APP_NAME}-db
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     spec:
       replicas: 1
       revisionHistoryLimit: 10
       selector:
-        name: ${NAME}-db
+        name: ${APP_NAME}-db
       strategy:
         activeDeadlineSeconds: 21600
         recreateParams:
@@ -319,7 +319,7 @@ objects:
         metadata:
           creationTimestamp: null
           labels:
-            name: ${NAME}-db
+            name: ${APP_NAME}-db
         spec:
           containers:
             - env:
@@ -327,22 +327,22 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       key: database-user
-                      name: ${NAME}-db
+                      name: ${APP_NAME}-db
                 - name: MYSQL_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       key: database-password
-                      name: ${NAME}-db
+                      name: ${APP_NAME}-db
                 - name: MYSQL_ROOT_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       key: database-root-password
-                      name: ${NAME}-db
+                      name: ${APP_NAME}-db
                 - name: MYSQL_DATABASE
                   valueFrom:
                     secretKeyRef:
                       key: database-name
-                      name: ${NAME}-db
+                      name: ${APP_NAME}-db
               image: registry.redhat.io/rhel8/mariadb-103
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -378,9 +378,9 @@ objects:
               terminationMessagePolicy: File
               volumeMounts:
                 - mountPath: /var/lib/mysql/data
-                  name: ${NAME}-mariadb-data
+                  name: ${APP_NAME}-mariadb-data
                 - mountPath: /var/lib/mysql
-                  name: ${NAME}-mariadb-docker
+                  name: ${APP_NAME}-mariadb-docker
           dnsPolicy: ClusterFirst
           restartPolicy: Always
           schedulerName: default-scheduler
@@ -388,32 +388,27 @@ objects:
           terminationGracePeriodSeconds: 30
           volumes:
             - persistentVolumeClaim:
-                claimName: ${NAME}-mariadb-data
-              name: ${NAME}-mariadb-data
-            - name: ${NAME}-mariadb-docker
+                claimName: ${APP_NAME}-mariadb-data
+              name: ${APP_NAME}-mariadb-data
+            - name: ${APP_NAME}-mariadb-docker
               emptyDir: {}
       test: false
     metadata:
       annotations:
-        app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"${NAME}"}]'
+        app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"${APP_NAME}"}]'
         template.alpha.openshift.io/wait-for-ready: 'true'
       generation: 2
       labels:
-        deploymentConfig: ${NAME}-db
+        deploymentConfig: ${APP_NAME}-db
         template: mariadb-persistent-template
-        group: ${NAME}
-        app: ${NAME}
-      name: ${NAME}-db
+        group: ${APP_NAME}
+        app: ${APP_NAME}
+      name: ${APP_NAME}-db
 parameters:
-- name: NAME
-  displayName: name
+- name: APP_NAME
+  displayName: App name
   description: the value used to group components by a common name
   required: true
-- name: MAUTIC_DB_SECRET_NAME
-  displayName: Mautic Database Secret Name
-  description: the secret name for the mautic db credentials
-  required: true
-  value: mautic-db
 - name: GIT_REF
   displayName: Git Branch
   description: the git branch to build from
@@ -429,7 +424,6 @@ parameters:
   displayName: IMAGE_TAG
   name: IMAGE_TAG
   required: true
-  value: apps.silver.devops.gov.bc.ca
 - description: registry where mautic is found/stored
   displayName: Image Registry
   name: IMAGE_REGISTRY
