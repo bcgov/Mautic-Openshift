@@ -162,15 +162,6 @@ objects:
           schedulerName: default-scheduler
           securityContext: {}
           terminationGracePeriodSeconds: 30
-          triggers:
-          - imageChangeParams:
-            containerNames:
-            - ${APP_NAME}
-            from:
-              kind: ImageStreamTag
-              name: ${APP_NAME}:${IMAGE_TAG}
-              namespace: ${NAMESPACE}
-          type: ImageChange
     metadata:
       annotations:
         alpha.image.policy.openshift.io/resolve-names: '*'
@@ -396,7 +387,6 @@ objects:
     metadata:
       annotations:
         app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"${APP_NAME}"}]'
-        template.alpha.openshift.io/wait-for-ready: 'true'
       generation: 2
       labels:
         deploymentConfig: ${APP_NAME}-db

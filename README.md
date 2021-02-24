@@ -7,18 +7,18 @@ To Run:
 
     - Example: ```oc process -f ./openshift/nsp.yaml -p NAMESPACE=de0974-tools | oc apply -f -```
 
-1. **Process and apply the mariadb secret.yaml**
+2. **Process and apply the mariadb secret.yaml**
 
     Secret values are generated if not passed in: ```oc process -f ./openshift/secret.yaml -p NAME=<name> | oc apply -f - -n <namespace>```
 
-    - Example: ```oc process -f ./openshift/secret.yaml -p APP_NAME=mautic | oc apply -f - -n pltfrm-tools```
+    - Example: ```oc process -f ./openshift/secret.yaml -p APP_NAME=mautic | oc apply -f - -n de0974-tools```
 
     To assign custom values to the parameters, use the -p flag. The parameters can only contain alphanumeric and underscore characters:
     ```oc process -f ./openshift/secret.yaml -p NAME=<name> -p DATABASE_USER=<database-user-name> -p DATABASE_NAME=<database-name> -p DATABASE_USER_PASSWORD=<database-user-password> -p DATABASE_ROOT_PASSWORD=<database-root-password> | oc apply -f - -n <namespace>```
 
     - Example: ```oc process -f ./openshift/secret.yaml -p APP_NAME=mautic -p DATABASE_USER=mautic_db_test -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2 | oc apply -f - -n de0974-tools```
 
-2. **Process and apply the mautic.yaml**
+3. **Process and apply the mautic.yaml**
     ```
         oc process -f ./openshift/mautic.yaml \
         -p APP_NAME=<app-name> \
@@ -33,7 +33,7 @@ To Run:
 
     - Example: ```oc process -f ./openshift/mautic.yaml -p APP_NAME=mautic -p GIT_REF=main -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p NAMESPACE=de0974-tools -p STORAGE_CLASS_NAME=netapp-file-standard -p IMAGE_TAG=3.1.2 | oc apply -f - -n de0974-tools```
 
-3. **Rollout the database and app**
+4. **Rollout the database and app**
 
     ```oc rollout latest dc/<app-name>-db -n <namespace> && oc rollout latest dc/<app-name> -n <namespace>```
 
@@ -79,7 +79,9 @@ In Mautic, an email distribution list is called a `segment`. A segment can easil
 ### Form
 Forms allow users to subscribe/unsubscribe themselves using the Mautic Subscription App. For each segment two forms should be created: subscribe and unsubscribe.
 
-When creating a form it is important that the `Successful Submit Action` is set to Redirect URL and that the Redirect URL/Message is set to https://mautic-app-url/subscribed for the subscribed form and https://mautic-app-url/unsubscribed for the unsubscribe form.
+When creating a form it is important that the `Successful Submit Action` is set to Redirect URL and that the Redirect URL/Message is set to https://<mautic-subscription-app-url>/subscribed for the subscribed form and https://<mautic-subscription-app-url>/unsubscribed for the unsubscribe form.
+
+- Example: https://mautic-subscription.apps.silver.devops.gov.bc.ca/subscribed and https://mautic-subscription.apps.silver.devops.gov.bc.ca/unsubscribed
 
 Under the `Fields` tab, a new `Email` field should be created. 
 
