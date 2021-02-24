@@ -400,7 +400,6 @@ objects:
       generation: 2
       labels:
         deploymentConfig: ${APP_NAME}-db
-        template: mariadb-persistent-template
         group: ${APP_NAME}
         app: ${APP_NAME}
       name: ${APP_NAME}-db
