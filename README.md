@@ -6,7 +6,7 @@ To Run:
 
     Secret values are generated if not passed in: ```oc process -f ./openshift/secret.yaml -p NAME=<name> | oc apply -f - -n <namespace>```
 
-    - Example: ```oc process -f ./openshift/secret.yaml | oc apply -f - -n pltfrm-tools```
+    - Example: ```oc process -f ./openshift/secret.yaml -p APP_NAME=mautic | oc apply -f - -n pltfrm-tools```
 
     To assign custom values to the parameters, use the -p flag. The parameters can only contain alphanumeric and underscore characters:
     ```oc process -f ./openshift/secret.yaml -p NAME=<name> -p DATABASE_USER=<database-user-name> -p DATABASE_NAME=<database-name> -p DATABASE_USER_PASSWORD=<database-user-password> -p DATABASE_ROOT_PASSWORD=<database-root-password> | oc apply -f - -n <namespace>```
@@ -28,9 +28,11 @@ To Run:
     ```
     ```oc process -f ./openshift/mautic.yaml -p NAME=<app-name> -p GIT_REF=<branch-name> -p GIT_REPO=https://github.com/<git-account>/<git-repo> -p NAMESPACE=<namespace> -p HOSTADDRESS=<host-address> | oc apply -f - -n <namespace>```
 
-    - Example: ```oc process -f ./openshift/mautic.yaml -p NAME=mautic -p GIT_REF=mautic3 -p GIT_REPO=https://github.com/patricksimonian/mautic-openshift -p NAMESPACE=pltfrm-tools -p HOSTADDRESS=apps.pathfinder.aro.devops.gov.bc.ca | oc apply -f - -n pltfrm-tools```
+    - Example: ```oc process -f ./openshift/mautic.yaml -p NAME=mautic -p GIT_REF=mautic3 -p GIT_REPO=https://github.com/patricksimonian/mautic-openshift -p NAMESPACE=pltfrm-tools | oc apply -f - -n pltfrm-tools```
     
+    oc process -f ./openshift/mautic.yaml -p APP_NAME=mautic -p GIT_REF=clean-state -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p NAMESPACE=de0974-tools -p IMAGE_TAG=test -p STORAGE_CLASS_NAME=netapp-file-standard | oc apply -f - -n de0974-tools 
 
+    oc process -f ./openshift/nsp.yaml -p NAMESPACE=de0974-tools | oc apply -f -
 3. **Rollout the database and app**
 
     ```oc rollout latest dc/<app-name>-db -n <namespace> && oc rollout latest dc/<app-name> -n <namespace>```
