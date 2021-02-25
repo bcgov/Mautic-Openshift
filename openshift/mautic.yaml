@@ -85,7 +85,7 @@ objects:
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     spec:
-      progressDeadlineSeconds: 600
+      progressDeadlineSeconds: 1200
       replicas: 1
       revisionHistoryLimit: 10
       selector:
@@ -162,6 +162,16 @@ objects:
           schedulerName: default-scheduler
           securityContext: {}
           terminationGracePeriodSeconds: 30
+      triggers:
+        - type: "ImageChange"
+          imageChangeParams:
+            automatic: true
+            from:
+              kind: "ImageStreamTag"
+              name: "${APP_NAME}:${IMAGE_TAG}"
+              namespace: "${NAMESPACE}"
+            containerNames:
+            - ${NAME}
     metadata:
       annotations:
         alpha.image.policy.openshift.io/resolve-names: '*'

@@ -1,7 +1,18 @@
 ## Setting up Mautic on Openshift
 
 To Run:
+### Using Argo
 
+
+## CI/CD Argo
+
+To build and deploy in the tools namespace using the argo pipeline, use the following command:
+
+```argo submit argo/mautic.build.yaml -p GIT_REF=<branch-name> -p GIT_REPO=<git-repo> -p  NAMESPACE=<tools-namespace> -p APP_NAME=<app-name> -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=<storage-class-name>```
+
+- Example: ```argo submit argo/mautic.build.yaml -p GIT_REF=clean-state -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p  NAMESPACE=de0974-tools -p APP_NAME=mautic -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=netapp-file-standard -p DATABASE_USER=mautic_db_test -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2```
+
+### Using manual commands
 1. **Create the network security policy**
     ```oc process -f ./openshift/nsp.yaml -p NAMESPACE=<namespace> | oc apply -f -```
 
@@ -89,19 +100,3 @@ Under the `Actions` tab, a new submit action to `Modify contact segments` should
 
 ### Email
 A `New Segment Email` can be set up under the `Channels` tab. For a basic layout the Blank theme can be used. The contents of the email can be set in the `builder`.
-
-
-## CI/CD Argo
-
-To build in the tools namespace and deploy to the dev namespace using the argo pipeline, use the following command:
-
-```argo submit argo/mautic.build.yaml -p BRANCH=<branch-name> -p REPO=https://github.com/<git-account>/<git-repo> -p  TOOLS_NAMESPACE=<tools-namespace> -p DEV_NAMESPACE=<dev-namespace> -p SUFFIX=<suffix> -p NAME=<app-name> -p IMAGE_TAG=<image-tag> -p STORAGE_CLASS_NAME=<storage-class-name> -p HOST_ADDRESS=<host-address>```
-
-- Example: ```argo submit argo/mautic.build.yaml -p BRANCH='main' -p REPO='https://github.com/bcgov/mautic-openshift/' -p  TOOLS_NAMESPACE='de0974-tools' -p DEV_NAMESPACE='de0974-dev' -p SUFFIX='-test' -p NAME='mautic-test' -p IMAGE_TAG='test' -p STORAGE_CLASS_NAME='netapp-file-standard' -p HOST_ADDRESS=apps.silver.devops.gov.bc.ca```
-
-
-To deploy to other namespaces after the build:
-
-```argo submit argo/mautic.promote.yaml -p BRANCH=<branch-name> -p REPO=https://github.com/<git-account>/<git-repo> -p TOOLS_NAMESPACE=<tools-namespace> -p DEV_NAMESPACE=<dev-namespace> -p TEST_NAMESPACE=<test-namespace> -p PROD_NAMESPACE=<prod-namespace> -p SUFFIX=<suffix> -p NAME=<app-name> -p IMAGE_TAG=<image-tag> -p STORAGE_CLASS_NAME=<storage-class-name> -p HOST_ADDRESS=<host-address>```
-
-- Example: ```argo submit argo/mautic.build.yaml -p BRANCH='main' -p REPO='https://github.com/bcgov/mautic-openshift/' -p TOOLS_NAMESPACE='de0974-tools' -p DEV_NAMESPACE='de0974-dev' -p TEST_NAMESPACE='de0974-test' -p PROD_NAMESPACE='de0974-prod' -p SUFFIX='-test' -p NAME='mautic-test' -p IMAGE_TAG='test' -p STORAGE_CLASS_NAME='netapp-file-standard' -p HOST_ADDRESS=apps.silver.devops.gov.bc.ca```
