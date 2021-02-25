@@ -59,8 +59,6 @@ spec:
           - >-
             oc project -n {{workflow.parameters.NAMESPACE}};
 
-            oc process -f ./openshift/nsp.yaml -p NAMESPACE={{workflow.parameters.NAMESPACE}} | oc apply -f -;
-
             oc process -f ./openshift/secret.yaml 
             -p APP_NAME={{workflow.parameters.APP_NAME}}
             -p DATABASE_USER={{workflow.parameters.DATABASE_USER}}

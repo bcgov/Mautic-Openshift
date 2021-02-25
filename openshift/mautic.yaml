@@ -62,8 +62,6 @@ objects:
     kind: PersistentVolumeClaim
     metadata:
       name: ${APP_NAME}-php-config
-      labels:
-        pvc: ${APP_NAME}
     spec:
       accessModes: 
       - ReadWriteOnce
@@ -76,8 +74,6 @@ objects:
     kind: PersistentVolumeClaim
     metadata:
       name: ${APP_NAME}-mariadb-data
-    labels:
-        pvc: ${APP_NAME}
     spec:
       accessModes: 
       - ReadWriteOnce
@@ -167,15 +163,15 @@ objects:
           securityContext: {}
           terminationGracePeriodSeconds: 30
       triggers:
-        - type: "ImageChange"
+        - type: ImageChange
           imageChangeParams:
             automatic: true
             from:
-              kind: "ImageStreamTag"
+              kind: ImageStreamTag
               name: "${APP_NAME}:${IMAGE_TAG}"
               namespace: "${NAMESPACE}"
             containerNames:
-            - ${NAME}
+            - ${APP_NAME}
     metadata:
       annotations:
         alpha.image.policy.openshift.io/resolve-names: '*'
