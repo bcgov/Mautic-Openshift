@@ -3,33 +3,39 @@ This guide will go over two methods to build and deploy Mautic on openshift: usi
 
 The guide will also go over a brief Mautic setup guide.
 
-## Create the network security policy
+## Building and Deploying Mautic on Openshift
+### Create the network security policy
    First, create the network security policies using the command:
    ```oc process -f ./openshift/nsp.yaml -p NAMESPACE=<namespace> | oc apply -f -```
 
     - Example: ```oc process -f ./openshift/nsp.yaml -p NAMESPACE=de0974-tools | oc apply -f -```
 
 
-## CI/CD Argo
+### CI/CD Argo
 
 To build and deploy in the tools namespace using the argo pipeline, use the following command:
 
 ```argo submit argo/mautic.build.yaml -p GIT_REF=<branch-name> -p GIT_REPO=<git-repo> -p  NAMESPACE=<tools-namespace> -p APP_NAME=<app-name> -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=<storage-class-name>```
 
-- Example: ```argo submit argo/mautic.build.yaml -p GIT_REF=clean-state -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p  NAMESPACE=de0974-tools -p APP_NAME=mautic -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=netapp-file-standard -p DATABASE_USER=mautic_db_test -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2```
+- Example: ```argo submit argo/mautic5.build.yaml -p GIT_REF=clean-state -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p  NAMESPACE=de0974-tools -p APP_NAME=mautic -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=netapp-file-standard -p DATABASE_USER=mautic_db_test -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2```
 
-## Using manual commands
-
+### Using manual commands
 
 1. **Process and apply the mariadb secret.yaml**
 
-    Secret values are generated if not passed in: ```oc process -f ./openshift/secret.yaml -p NAME=<name> | oc apply -f - -n <namespace>```
+    Create the secret using the command:
+    ```
+        oc process -f ./openshift/secret.yaml \
+        -p NAME=<name> \
+        -p DATABASE_USER=<database-user-name> \
+        -p DATABASE_NAME=<database-name> \
+        -p DATABASE_USER_PASSWORD=<database-user-password> \
+        -p DATABASE_ROOT_PASSWORD=<database-root-password> \ | 
+        oc apply -f - -n <namespace>
+    ```
 
-    - Example: ```oc process -f ./openshift/secret.yaml -p APP_NAME=mautic | oc apply -f - -n de0974-tools```
-
-    To assign custom values to the parameters, use the -p flag. The parameters can only contain alphanumeric and underscore characters:
-    ```oc process -f ./openshift/secret.yaml -p NAME=<name> -p DATABASE_USER=<database-user-name> -p DATABASE_NAME=<database-name> -p DATABASE_USER_PASSWORD=<database-user-password> -p DATABASE_ROOT_PASSWORD=<database-root-password> | oc apply -f - -n <namespace>```
-
+    The parameters can only contain alphanumeric and underscore characters.
+    
     - Example: ```oc process -f ./openshift/secret.yaml -p APP_NAME=mautic -p DATABASE_USER=mautic_db_test -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2 | oc apply -f - -n de0974-tools```
 
 2. **Process and apply the mautic.yaml**
@@ -46,12 +52,6 @@ To build and deploy in the tools namespace using the argo pipeline, use the foll
     ```
 
     - Example: ```oc process -f ./openshift/mautic.yaml -p APP_NAME=mautic -p GIT_REF=main -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p NAMESPACE=de0974-tools -p STORAGE_CLASS_NAME=netapp-file-standard -p IMAGE_TAG=3.1.2 | oc apply -f - -n de0974-tools```
-
-4. **Rollout the database and app**
-
-    ```oc rollout latest dc/<app-name>-db -n <namespace> && oc rollout latest dc/<app-name> -n <namespace>```
-
-    - Example: ```oc rollout latest dc/mautic-db -n de0974-tools && oc rollout latest dc/mautic -n de0974-tools```
     
 ## Setting up Mautic
 
