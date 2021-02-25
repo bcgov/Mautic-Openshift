@@ -8,7 +8,7 @@ The guide will also go over a brief Mautic setup guide.
    First, create the network security policies using the command:
    ```oc process -f ./openshift/nsp.yaml -p NAMESPACE=<namespace> | oc apply -f -```
 
-    - Example: ```oc process -f ./openshift/nsp.yaml -p NAMESPACE=de0974-tools | oc apply -f -```
+- Example: ```oc process -f ./openshift/nsp.yaml -p NAMESPACE=de0974-tools | oc apply -f -```
 
 
 ### CI/CD Argo
@@ -17,7 +17,7 @@ To build and deploy in the tools namespace using the argo pipeline, use the foll
 
 ```argo submit argo/mautic.build.yaml -p GIT_REF=<branch-name> -p GIT_REPO=<git-repo> -p  NAMESPACE=<tools-namespace> -p APP_NAME=<app-name> -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=<storage-class-name>```
 
-- Example: ```argo submit argo/mautic5.build.yaml -p GIT_REF=clean-state -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p  NAMESPACE=de0974-tools -p APP_NAME=mautic -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=netapp-file-standard -p DATABASE_USER=mautic_db_test -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2```
+- Example: ```argo submit argo/mautic.build.yaml -p GIT_REF=clean-state -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p  NAMESPACE=de0974-tools -p APP_NAME=mautic -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=netapp-file-standard -p DATABASE_USER=mautic_db_test -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2```
 
 ### Using manual commands
 
@@ -30,8 +30,8 @@ To build and deploy in the tools namespace using the argo pipeline, use the foll
         -p DATABASE_USER=<database-user-name> \
         -p DATABASE_NAME=<database-name> \
         -p DATABASE_USER_PASSWORD=<database-user-password> \
-        -p DATABASE_ROOT_PASSWORD=<database-root-password> \ | 
-        oc apply -f - -n <namespace>
+        -p DATABASE_ROOT_PASSWORD=<database-root-password> \
+        | oc apply -f - -n <namespace>
     ```
 
     The parameters can only contain alphanumeric and underscore characters.
@@ -46,8 +46,8 @@ To build and deploy in the tools namespace using the argo pipeline, use the foll
         -p GIT_REPO=<git-repo> \
         -p NAMESPACE=<namespace> \
         -p STORAGE_CLASS_NAME=<storage-class-name> \
-        -p IMAGE_TAG=3.1.2 \ |
-        oc apply -f - -n <namespace>
+        -p IMAGE_TAG=3.1.2 \
+        | oc apply -f - -n <namespace>
 
     ```
 
@@ -95,7 +95,7 @@ Forms allow users to subscribe/unsubscribe themselves using the Mautic Subscript
 
 When creating a form it is important that the `Successful Submit Action` is set to Redirect URL and that the Redirect URL/Message is set to https://<mautic-subscription-app-url>/subscribed for the subscribed form and https://<mautic-subscription-app-url>/unsubscribed for the unsubscribe form.
 
-- Example: https://mautic-subscription.apps.silver.devops.gov.bc.ca/subscribed and https://mautic-subscription.apps.silver.devops.gov.bc.ca/unsubscribed
+- Example: ```https://mautic-subscription.apps.silver.devops.gov.bc.ca/subscribed``` and ```https://mautic-subscription.apps.silver.devops.gov.bc.ca/unsubscribed```
 
 Under the `Fields` tab, a new `Email` field should be created. 
 
