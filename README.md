@@ -15,9 +15,11 @@ The guide will also go over a brief Mautic setup guide.
 
 To build and deploy in the tools namespace using the argo pipeline, use the following command:
 
-```argo submit argo/mautic.build.yaml -p GIT_REF=<branch-name> -p GIT_REPO=<git-repo> -p  NAMESPACE=<tools-namespace> -p APP_NAME=<app-name> -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=<storage-class-name> -p DATABASE_USER=[database-user-name] -p DATABASE_USER_PASSWORD=[database-user-password] -p DATABASE_ROOT_PASSWORD=[database-user-password]```
+```argo submit argo/mautic.build.yaml -p GIT_REF=<branch-name> -p GIT_REPO=<git-repo> -p  NAMESPACE=<tools-namespace> -p APP_NAME=<app-name> -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=<storage-class-name> -p DATABASE_NAME=[database-name] -p DATABASE_USER=[database-user-name] -p DATABASE_USER_PASSWORD=[database-user-password] -p DATABASE_ROOT_PASSWORD=[database-user-password]```
 
-- Example: ```argo submit argo/mautic.build.yaml -p GIT_REF=clean-state -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p  NAMESPACE=de0974-tools -p APP_NAME=mautic -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=netapp-file-standard -p DATABASE_USER=mautic_db_test -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2```
+Note that the DATABASE_USER, DATABASE_USER_PASSWORD, and DATABASE_ROOT_PASSWORD must not contain
+
+- Example: ```argo submit argo/mautic.build.yaml -p GIT_REF=clean-state -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p  NAMESPACE=de0974-tools -p APP_NAME=mautic -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=netapp-file-standard -p DATABASE_NAME=mautic-db -p DATABASE_USER=mautic_db_test -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2```
 
 ### Using manual commands
 
@@ -47,11 +49,12 @@ To build and deploy in the tools namespace using the argo pipeline, use the foll
         -p NAMESPACE=<namespace> \
         -p STORAGE_CLASS_NAME=<storage-class-name> \
         -p IMAGE_TAG=3.1.2 \
+        -p DATABASE_NAME=<database-name> \
         | oc apply -f - -n <namespace>
 
     ```
 
-    - Example: ```oc process -f ./openshift/mautic.yaml -p APP_NAME=mautic -p GIT_REF=main -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p NAMESPACE=de0974-tools -p STORAGE_CLASS_NAME=netapp-file-standard -p IMAGE_TAG=3.1.2 | oc apply -f - -n de0974-tools```
+    - Example: ```oc process -f ./openshift/mautic.yaml -p APP_NAME=mautic -p GIT_REF=main -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p NAMESPACE=de0974-tools -p STORAGE_CLASS_NAME=netapp-file-standard -p IMAGE_TAG=3.1.2 -p DATABASE_NAME=| oc apply -f - -n de0974-tools```
     
 ## Setting up Mautic
 

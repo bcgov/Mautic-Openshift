@@ -61,6 +61,7 @@ spec:
 
             oc process -f ./openshift/secret.yaml 
             -p APP_NAME={{workflow.parameters.APP_NAME}}
+            -p DATABASE_NAME={{workflow.parameters.DATABASE_NAME}}
             -p DATABASE_USER={{workflow.parameters.DATABASE_USER}}
             -p DATABASE_USER_PASSWORD={{workflow.parameters.DATABASE_USER_PASSWORD}}
             -p DATABASE_ROOT_PASSWORD={{workflow.parameters.DATABASE_ROOT_PASSWORD}}
