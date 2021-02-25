@@ -175,7 +175,7 @@ objects:
     metadata:
       annotations:
         alpha.image.policy.openshift.io/resolve-names: '*'
-        app.openshift.io/vcs-ref: main
+        app.openshift.io/vcs-ref: ${GIT_REF}
         app.openshift.io/vcs-uri: ${GIT_REPO}
         deployment.kubernetes.io/revision: '11'
         openshift.io/generated-by: OpenShiftWebConsole
