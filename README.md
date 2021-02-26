@@ -8,7 +8,7 @@ The guide will also go over a brief Mautic setup guide.
    First, create the network security policies using the command:
    ```oc process -f ./openshift/nsp.yaml -p APP_NAME=<app-name> -p NAMESPACE=<namespace> -p ENVIRONMENT=<environment> | oc apply -f -```
 
-- Example: ```oc process -f ./openshift/nsp.yaml -p NAMESPACE=de0974-tools | oc apply -f -```
+- Example: ```oc process -f ./openshift/nsp.yaml -p APP_NAME=mautic -p NAMESPACE=de0974 -p ENVIRONMENT=tools | oc apply -f -```
 
 
 ### CI/CD Argo
