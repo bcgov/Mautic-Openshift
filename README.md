@@ -48,13 +48,12 @@ Note that the DATABASE_USER, DATABASE_USER_PASSWORD, and DATABASE_ROOT_PASSWORD 
         -p GIT_REPO=<git-repo> \
         -p NAMESPACE=<namespace> \
         -p STORAGE_CLASS_NAME=<storage-class-name> \
-        -p IMAGE_TAG=3.1.2 \
-        -p DATABASE_NAME=<database-name> \
+        -p IMAGE_TAG=3.1.2 \\
         | oc apply -f - -n <namespace>
 
     ```
 
-    - Example: ```oc process -f ./openshift/mautic.yaml -p APP_NAME=mautic -p GIT_REF=main -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p NAMESPACE=de0974-tools -p STORAGE_CLASS_NAME=netapp-file-standard -p IMAGE_TAG=3.1.2 -p DATABASE_NAME=mautic_db | oc apply -f - -n de0974-tools```
+    - Example: ```oc process -f ./openshift/mautic.yaml -p APP_NAME=mautic -p GIT_REF=main -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p NAMESPACE=de0974-tools -p STORAGE_CLASS_NAME=netapp-file-standard -p IMAGE_TAG=3.1.2 | oc apply -f - -n de0974-tools```
     
 ## Setting up Mautic
 
