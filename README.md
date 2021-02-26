@@ -55,6 +55,11 @@ Note that the DATABASE_USER, DATABASE_USER_PASSWORD, and DATABASE_ROOT_PASSWORD 
 
     - Example: ```oc process -f ./openshift/mautic.yaml -p APP_NAME=mautic -p GIT_REF=main -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p NAMESPACE=de0974-tools -p STORAGE_CLASS_NAME=netapp-file-standard -p IMAGE_TAG=3.1.2 | oc apply -f - -n de0974-tools```
     
+## Cleaning up the namespaces
+To clean up mautic artifacts, use the command: 
+    `oc delete all,secret,configmap -l app=<app-name> -n <tools-namespace>`
+- Example: `oc delete all,secret,configmap -l app=mautic -n de0974-tools`
+
 ## Setting up Mautic
 
 1. Go to the Mautic Deployment route. This will lead you to the Mautic Installation - Environment Check page. 
