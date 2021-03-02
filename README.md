@@ -93,7 +93,7 @@ Additionally, you may need to configure your security settings in Gmail to turn 
     To allow emails to be sent out to contacts, you must change the Frequency Rule within Mautic.
     Scrolling down, you will see the "Default Frequency Rule". This number will be the maximum number of emails that can be sent to a user in the given time period. Setting this number to a reasonable value will help prevent unintentional email spamming.
 
-    To customize the unsubscribe text, scroll down to "Unsubscribe Settings". Replace the `|URL|` text under `Text for the {unsubscribe_text} token` with the mautic subsription app url. Doing so will allow us to easily generate the unsubscribe message in an email by adding `{unsubscribe_text}` to an email.
+    To customize the unsubscribe text that is to be displayed at the end of an email, scroll down to "Unsubscribe Settings". Replace the `|URL|` text under `Text for the {unsubscribe_text} token` with the mautic subsription app url. Doing so will allow us to easily generate the unsubscribe message in an email by adding `{unsubscribe_text}` to an email.
 
     Make sure to apply and save your changes.
 
@@ -108,7 +108,7 @@ Forms allow users to subscribe/unsubscribe themselves using the Mautic Subscript
 A form can be created by selecting `New Standalone Form`.
 The forms' name can be customized to any name but they must match the SUBSCRIBE_FORM and UNSUBSCRIBE_FORM parameters for the Mautic Subscription App.
 
-When creating a form it is important that the `Successful Submit Action` is set to Redirect URL and that the Redirect URL/Message is set to https://<mautic-subscription-app-url>/subscribed for the subscribed form and https://<mautic-subscription-app-url>/unsubscribed for the unsubscribe form.
+When creating a form it is important that the `Successful Submit Action` is set to Redirect URL and that the Redirect URL/Message is set to https://[mautic-subscription-app-url]/subscribed for the subscribed form and https://[mautic-subscription-app-url]/unsubscribed for the unsubscribe form.
 
 - Example: ```https://mautic-subscription.apps.silver.devops.gov.bc.ca/subscribed``` and ```https://mautic-subscription.apps.silver.devops.gov.bc.ca/unsubscribed```
 
