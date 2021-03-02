@@ -88,7 +88,9 @@ To use Gmail, use the following values:
 
 Additionally, you may need to configure your security settings in Gmail to turn on "Less secure app access" at https://myaccount.google.com/security as well as turn on "Display Unlock Captcha" at https://accounts.google.com/b/0/DisplayUnlockCaptcha.
 
-5. To allow emails to be sent out to contacts, you must change the Frequency Rule within Mautic.
+5. After setting up the email configuration, use the `Test Connection` and `Send Test Email` buttons to verify that the email is set up properly.
+
+6. To allow emails to be sent out to contacts, you must change the Frequency Rule within Mautic.
     On the top right of the page, you will see a cog for the settings. Go to Configuration -> Email Settings.
     Scrolling down, you will see the "Default Frequency Rule". This number will be the maximum number of emails that can be sent to a user in the given time period. Setting this number to a reasonable value will help prevent unintentional email spamming.
 
@@ -113,5 +115,4 @@ Under the `Fields` tab, a new `Email` field should be created with a label value
 Under the `Actions` tab, a new submit action to `Modify contact segments` should be created. You can choose to `Add contact to selected segment(s)` for the subscribe form or `Remove contact from selected segment(s)` for the unsubscribe form. The name of the action can be customized.
 
 ### Email
-To set 
 A `New Segment Email` can be set up under the `Channels` tab. For a basic layout the Blank theme can be used. The contents of the email can be set in the `builder`.
