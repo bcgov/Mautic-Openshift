@@ -105,7 +105,7 @@ In Mautic, an email distribution list is called a `segment`. A segment can easil
 ### Form
 Forms allow users to subscribe/unsubscribe themselves using the Mautic Subscription App. For each segment two forms should be created: subscribe and unsubscribe. By default the mautic subscription app uses the subscribe form as form1 and the unsubscribe form as form2.
 
-A form can be created by selecting `New Standalone Form`.
+A form can be created by selecting `Components`->`Forms`->`New Standalone Form`.
 The forms' name can be customized to any name but they must match the SUBSCRIBE_FORM and UNSUBSCRIBE_FORM parameters for the Mautic Subscription App.
 
 When creating a form it is important that the `Successful Submit Action` is set to Redirect URL and that the Redirect URL/Message is set to https://[mautic-subscription-app-url]/subscribed for the subscribed form and https://[mautic-subscription-app-url]/unsubscribed for the unsubscribe form.
@@ -117,7 +117,7 @@ Under the `Fields` tab, a new `Email` field should be created with a label value
 Under the `Actions` tab, a new submit action to `Modify contact segments` should be created. You can choose to `Add contact to selected segment(s)` for the subscribe form or `Remove contact from selected segment(s)` for the unsubscribe form. The name of the action can be customized.
 
 ### Email
-A `New Segment Email` can be set up under the `Channels` tab. For a basic layout the Blank theme can be used. It is important to note that an email template can only be sent to a contact once.
+A `New Segment Email` can be set up under the `Channels` -> `Emails` tab. For a basic layout the Blank theme can be used. It is important to note that an email template can only be sent to a contact once.
 
 The `subject` field will be the title of the email, `Internal Name` will be the name of the email template tracked within Mautic, and the `Contact Segment` should be chosen as the segment to send the email to.
 
