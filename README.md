@@ -63,7 +63,7 @@ To clean up mautic artifacts, use the command:
 ## Setting up Mautic
 
 1. Go to the Mautic Deployment route. This will lead you to the Mautic Installation - Environment Check page. 
-The installer may suggest some recommendations for the configuration. Carefully review these recommendations and go to the next step.
+The installer may suggest some recommendations for the configuration. Review these recommendations and go to the next step.
 
 2. On the Mautic Installation - Database Setup page, the required input should be pre-filled for you. Go to the next page.
 
