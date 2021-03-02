@@ -88,13 +88,13 @@ To use Gmail, use the following values:
 
 Additionally, you may need to configure your security settings in Gmail to turn on "Less secure app access" at https://myaccount.google.com/security as well as turn on "Display Unlock Captcha" at https://accounts.google.com/b/0/DisplayUnlockCaptcha.
 
-5. After setting up the email configuration, use the `Test Connection` and `Send Test Email` buttons to verify that the email is set up properly.
+5. After logging in, navigate to the settings cog in the top right of the page -> configuration -> Email Settings and use the `Test Connection` and `Send Test Email` buttons to verify that the email is set up properly. 
+To allow emails to be sent out to contacts, you must change the Frequency Rule within Mautic.
+Scrolling down, you will see the "Default Frequency Rule". This number will be the maximum number of emails that can be sent to a user in the given time period. Setting this number to a reasonable value will help prevent unintentional email spamming.
 
-6. To allow emails to be sent out to contacts, you must change the Frequency Rule within Mautic.
-    On the top right of the page, you will see a cog for the settings. Go to Configuration -> Email Settings.
-    Scrolling down, you will see the "Default Frequency Rule". This number will be the maximum number of emails that can be sent to a user in the given time period. Setting this number to a reasonable value will help prevent unintentional email spamming.
+To customize the unsubscribe text, scroll down to "Unsubscribe Settings". Replace the `|URL|` text under `Text for the {unsubscribe_text} token` with the mautic subsription app url. Doing so will allow us to easily generate the unsubscribe message in an email by adding `{unsubscribe_text}` to an email.
 
-    To customize the unsubscribe text, scroll down to "Unsubscribe Settings". Replace the `|URL|` text with the mautic subsription app url. Doing so will allow us to easily generate the unsubscribe message in an email by adding `{unsubscribe_text}` to an email.
+Make sure to apply and save your changes.
 
 ## Mautic Workflow
 
