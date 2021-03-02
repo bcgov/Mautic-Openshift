@@ -117,4 +117,13 @@ Under the `Fields` tab, a new `Email` field should be created with a label value
 Under the `Actions` tab, a new submit action to `Modify contact segments` should be created. You can choose to `Add contact to selected segment(s)` for the subscribe form or `Remove contact from selected segment(s)` for the unsubscribe form. The name of the action can be customized.
 
 ### Email
-A `New Segment Email` can be set up under the `Channels` tab. For a basic layout the Blank theme can be used. The contents of the email can be set in the `builder`. It is important to note that an email template can only be sent to a contact once.
+A `New Segment Email` can be set up under the `Channels` tab. For a basic layout the Blank theme can be used. It is important to note that an email template can only be sent to a contact once.
+
+The `subject` field will be the title of the email, `Internal Name` will be the name of the email template tracked within Mautic, and the `Contact Segment` should be chosen as the segment to send the email to.
+
+The contents of the email can be set in the `builder`.
+Within the builder, it will pre-populate two `slots` for you. We can click on the slots to edit the contents or delete them and add our own. A slot can be added by dragging a slot type from the right and dropping it in the builder section.
+
+At the end of the email content, include `{unsubscribe_text}` to attach the unsubscribe message.
+
+The email can be previewed by applying, then clicking on the `Public Preview URL`
