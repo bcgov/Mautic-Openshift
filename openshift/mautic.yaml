@@ -199,6 +199,7 @@ objects:
       wildcardPolicy: None
       tls:
         termination: Edge
+        insecureEdgeTerminationPolicy: Redirect
     metadata:
       annotations:
         openshift.io/host.generated: 'true'
