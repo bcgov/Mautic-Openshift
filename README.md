@@ -1,3 +1,7 @@
+# Architecture Diagram
+
+![Architecture Diagram](architecture-diagram.png)
+
 # Setting up Mautic on Openshift
 This guide will go over two methods to build and deploy Mautic on openshift: using argo and using openshift commands.
 
