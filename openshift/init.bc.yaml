@@ -7,8 +7,8 @@ items:
       openshift.io/generated-by: OpenShiftNewBuild
     creationTimestamp: null
     labels:
-      build: mautic-init
-    name: ubuntu
+      build: ${APP_NAME}-init
+    name: ${APP_NAME}-init
   spec:
     lookupPolicy:
       local: false
@@ -32,8 +32,8 @@ items:
       openshift.io/generated-by: OpenShiftNewBuild
     creationTimestamp: null
     labels:
-      build: mautic-init
-    name: mautic-init
+      build: ${APP_NAME}-init
+    name: ${APP_NAME}-init
   spec:
     lookupPolicy:
       local: false
@@ -46,21 +46,21 @@ items:
       openshift.io/generated-by: OpenShiftNewBuild
     creationTimestamp: null
     labels:
-      build: mautic-init
-    name: mautic-init
+      build: ${APP_NAME}-init
+    name: ${APP_NAME}-init
   spec:
     nodeSelector: null
     output:
       to:
         kind: ImageStreamTag
-        name: mautic-init:latest
+        name: ${APP_NAME}-init:latest
     postCommit: {}
     resources: {}
     source:
-      contextDir: mautic-init
+      contextDir: ${APP_NAME}-init
       git:
-        ref: email-themes
-        uri: https://github.com/bcgov/mautic-openshift
+        ref: ${GIT_REF}
+        uri: ${GIT_REPO}
       type: Git
     strategy:
       dockerStrategy:
