@@ -127,6 +127,17 @@ objects:
           - name: ${APP_NAME}-apache-conf
             configMap:
               name: ${APP_NAME}-apache-config
+          initContainers:
+            - env:
+              - name: VOLUME_PATH
+                value: /var/www/html/themes/
+              image: ${IMAGE_REGISTRY}/${NAMESPACE}/mautic-init:latest
+              name: mautic-init
+              command:
+                - mv /opt/app-root/themes/* /var/www/html/themes/
+              volumeMounts:
+              - name: ${APP_NAME}-theme
+                mountPath: /var/www/html/themes/
           containers:
             - env:
                 - name: MAUTIC_DB_USER
@@ -439,6 +450,7 @@ parameters:
 - name: NAMESPACE
   displayName: Namespace
   description: the namespace of the app
+  required: true
 - description: A name used for all objects
   displayName: IMAGE_TAG
   name: IMAGE_TAG
