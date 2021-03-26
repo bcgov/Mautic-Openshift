@@ -133,6 +133,7 @@ objects:
                 value: /var/www/html/themes/
               image: ${IMAGE_REGISTRY}/${NAMESPACE}/mautic-init:latest
               name: mautic-init
+              imagePullPolicy: Always
               command:
                 - mv /opt/app-root/themes/* /var/www/html/themes/
               volumeMounts:
