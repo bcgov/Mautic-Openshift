@@ -103,7 +103,7 @@ objects:
       selector:
         deploymentconfig: ${APP_NAME}
       strategy:
-        type: Rolling
+        type: Recreate
       template:
         metadata:
           creationTimestamp: null
