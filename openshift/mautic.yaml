@@ -82,18 +82,18 @@ objects:
         requests:
           storage: 1Gi
       storageClassName: ${STORAGE_CLASS_NAME}
-  - apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: ${APP_NAME}-theme
-    spec:
-      accessModes: 
-      - ReadWriteMany
-      volumeMode: Filesystem
-      resources:
-        requests:
-          storage: 1Gi
-      storageClassName: ${STORAGE_CLASS_NAME}
+  # - apiVersion: v1
+  #   kind: PersistentVolumeClaim
+  #   metadata:
+  #     name: ${APP_NAME}-theme
+  #   spec:
+  #     accessModes: 
+  #     - ReadWriteMany
+  #     volumeMode: Filesystem
+  #     resources:
+  #       requests:
+  #         storage: 1Gi
+  #     storageClassName: ${STORAGE_CLASS_NAME}
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     spec:
@@ -122,8 +122,9 @@ objects:
           - name: ${APP_NAME}-cache-unsubscribe
             emptyDir: {}
           - name: ${APP_NAME}-theme
-            persistentVolumeClaim:
-              claimName: ${APP_NAME}-theme
+            emptyDir: {}
+            # persistentVolumeClaim:
+            #   claimName: ${APP_NAME}-theme
           - name: ${APP_NAME}-apache-conf
             configMap:
               name: ${APP_NAME}-apache-config
@@ -134,8 +135,6 @@ objects:
               image: ${IMAGE_REGISTRY}/${NAMESPACE}/mautic-init:latest
               name: mautic-init
               imagePullPolicy: Always
-              command:
-                - mv /opt/app-root/themes/* /var/www/html/themes/
               volumeMounts:
               - name: ${APP_NAME}-theme
                 mountPath: /var/www/html/themes/

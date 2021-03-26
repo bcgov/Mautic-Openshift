@@ -9,7 +9,8 @@ RUN mkdir ${APP_ROOT}/themes
 
 COPY themes ${APP_ROOT}/themes
 
-RUN chmod -R 666 ${APP_ROOT}/themes
+RUN chgrp -R 0 ${APP_ROOT}/themes && \
+    chmod -R g=u ${APP_ROOT}/themes
 COPY entrypoint.sh ${APP_ROOT}
 
 RUN echo "finished copying" && ls -l ${APP_ROOT}/themes
