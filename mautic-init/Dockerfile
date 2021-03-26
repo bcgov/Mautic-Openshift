@@ -4,7 +4,7 @@ ENV VOLUME_PATH=/var/www/html/themes
 
 ENV APP_ROOT=/opt/app-root
 WORKDIR ${APP_ROOT}
-RUN mkdir ${APP_ROOT}
+
 RUN mkdir ${APP_ROOT}/themes 
 
 COPY themes ${APP_ROOT}/themes
