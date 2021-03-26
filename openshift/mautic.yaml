@@ -109,9 +109,6 @@ objects:
               claimName: ${APP_NAME}-php-config
           - name: ${APP_NAME}-cache-unsubscribe
             emptyDir: {}
-          - name: ${APP_NAME}-theme
-            configMap:
-              name: ${APP_NAME}-email-template
           - name: ${APP_NAME}-apache-conf
             configMap:
               name: ${APP_NAME}-apache-config
@@ -160,8 +157,6 @@ objects:
                   mountPath: /var/www/html/app/config/
                 - name: ${APP_NAME}-cache-unsubscribe
                   mountPath: /var/www/html/app/../var/tmp/twig/
-                - name: ${APP_NAME}-theme
-                  mountPath: /var/www/html/themes/
           dnsPolicy: ClusterFirst
           restartPolicy: Always
           schedulerName: default-scheduler
