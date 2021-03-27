@@ -515,9 +515,6 @@ objects:
         type: ImageChange
     status:
       lastVersion: 0
-  kind: List
-  metadata: {}
-
 parameters:
 - name: APP_NAME
   displayName: App name
