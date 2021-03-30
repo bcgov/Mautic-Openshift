@@ -9,6 +9,7 @@ objects:
       creationTimestamp: null
       labels:
         build: ${APP_NAME}-init
+        name: 'mautic'
       name: ubuntu
     spec:
       lookupPolicy:
@@ -34,6 +35,7 @@ objects:
       creationTimestamp: null
       labels:
         build: ${APP_NAME}-init
+        name: 'mautic'
       name: ${APP_NAME}-init
     spec:
       lookupPolicy:
@@ -48,6 +50,7 @@ objects:
       creationTimestamp: null
       labels:
         build: ${APP_NAME}-init
+        name: 'mautic'
       name: ${APP_NAME}-init
     spec:
       nodeSelector: null
