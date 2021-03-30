@@ -134,8 +134,8 @@ objects:
             - env:
               - name: VOLUME_PATH
                 value: /var/www/html/themes/
-              image: ${IMAGE_REGISTRY}/${NAMESPACE}/mautic-init:latest
-              name: mautic-init
+              image: ${IMAGE_REGISTRY}/${NAMESPACE}/${APP_NAME}-init:latest
+              name: ${APP_NAME}-init
               imagePullPolicy: Always
               volumeMounts:
               - name: ${APP_NAME}-theme
