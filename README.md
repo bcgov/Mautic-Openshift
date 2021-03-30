@@ -61,8 +61,12 @@ Note that the DATABASE_USER, DATABASE_USER_PASSWORD, and DATABASE_ROOT_PASSWORD 
     
 ## Cleaning up the namespaces
 To clean up mautic artifacts, use the command: 
-    `oc delete all,secret,configmap -l app=<app-name> -n <tools-namespace>`
-- Example: `oc delete all,secret,configmap -l app=mautic -n de0974-tools`
+    `oc delete all,secret,configmap -l name=mautic -n <namespace>`
+- Example: `oc delete all,secret,configmap -l name=mautic -n de0974-tools`
+
+Or to clean up mautic artifacts for a certain deployment:    
+    `oc delete all,secret,configmap -l app=<app-name> -n <namespace>`
+- Example: `oc delete all,secret,configmap -l app=mautic-test -n de0974-tools`
 
 ## Setting up Mautic
 

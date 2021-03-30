@@ -504,12 +504,6 @@ objects:
             name: ubuntu:latest
         type: Docker
       triggers:
-      - github:
-          secret: YqsGcTl8eAQZemodIrOz
-        type: GitHub
-      - generic:
-          secret: Feu1vIWmFdUHRIdDA6PN
-        type: Generic
       - type: ConfigChange
       - imageChange: {}
         type: ImageChange
