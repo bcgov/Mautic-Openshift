@@ -434,6 +434,79 @@ objects:
         group: ${APP_NAME}
         app: ${APP_NAME}
       name: ${APP_NAME}-db
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewBuild
+      creationTimestamp: null
+      labels:
+        build: ${APP_NAME}-init
+      name: ubuntu
+    spec:
+      lookupPolicy:
+        local: false
+      tags:
+      - annotations:
+          openshift.io/imported-from: ubuntu:latest
+        from:
+          kind: DockerImage
+          name: ubuntu:latest
+        generation: null
+        importPolicy: {}
+        name: latest
+        referencePolicy:
+          type: ""
+    status:
+      dockerImageRepository: ""
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewBuild
+      creationTimestamp: null
+      labels:
+        build: ${APP_NAME}-init
+      name: mautic-init
+    spec:
+      lookupPolicy:
+        local: false
+    status:
+      dockerImageRepository: ""
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewBuild
+      creationTimestamp: null
+      labels:
+        build: ${APP_NAME}-init
+      name: ${APP_NAME}-init
+    spec:
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: mautic-init:latest
+      postCommit: {}
+      resources: {}
+      source:
+        contextDir: mautic-init
+        git:
+          ref: ${GIT_REF}
+          uri: ${GIT_REPO}
+        type: Git
+      strategy:
+        dockerStrategy:
+          from:
+            kind: ImageStreamTag
+            name: ubuntu:latest
+        type: Docker
+      triggers:
+      - type: ConfigChange
+    status:
+      lastVersion: 0
+
 parameters:
 - name: APP_NAME
   displayName: App name
