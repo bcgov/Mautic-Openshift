@@ -32,6 +32,7 @@ objects:
         app.openshift.io/vcs-uri: ${GIT_REPO}
         openshift.io/generated-by: OpenShiftWebConsole
       labels:
+        name: 'mautic'
         app: ${APP_NAME}
         group: ${APP_NAME}
         buildConfig: ${APP_NAME}
@@ -108,6 +109,7 @@ objects:
         metadata:
           creationTimestamp: null
           labels:
+            name: 'mautic'
             app: ${APP_NAME}
             deploymentconfig: ${APP_NAME}
         spec:
@@ -232,6 +234,7 @@ objects:
       annotations:
         openshift.io/host.generated: 'true'
       labels:
+        name: 'mautic'
         app: ${APP_NAME}
         deploymentConfig: ${APP_NAME}
         app.kubernetes.io/component: ${APP_NAME}
@@ -256,6 +259,7 @@ objects:
         app.openshift.io/vcs-uri: ${GIT_REPO}
         openshift.io/generated-by: OpenShiftWebConsole
       labels:
+        name: 'mautic'
         app: ${APP_NAME}
         deploymentConfig: ${APP_NAME}
         app.kubernetes.io/component: ${APP_NAME}
@@ -268,6 +272,7 @@ objects:
       annotations:
         openshift.io/host.generated: 'true'
       labels:
+        name: 'mautic'
         app: ${APP_NAME}
         deploymentConfig: ${APP_NAME}
         app.kubernetes.io/component: ${APP_NAME}
@@ -330,6 +335,7 @@ objects:
       annotations:
         template.openshift.io/expose-uri: 'mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="mariadb")].port}'
       labels:
+        name: 'mautic'
         app: ${APP_NAME}
         deploymentConfig: ${APP_NAME}-db
         group: ${APP_NAME}
@@ -430,6 +436,7 @@ objects:
         app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"${APP_NAME}"}]'
       generation: 2
       labels:
+        name: ${APP_NAME}-db
         deploymentConfig: ${APP_NAME}-db
         group: ${APP_NAME}
         app: ${APP_NAME}
