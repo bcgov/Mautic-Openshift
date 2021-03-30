@@ -41,7 +41,7 @@ objects:
         # "allow ${NAMESPACE}-${ENVIRONMENT} pods to talk to the k8s api"
         podSelector:
           matchLabels:
-            app: ${APP_NAME}
+            name: ${APP_NAME}
         ingress:
         - from:
           - namespaceSelector: {}
