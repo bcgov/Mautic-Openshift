@@ -442,6 +442,9 @@ objects:
         app: ${APP_NAME}
       name: ${APP_NAME}-db
 
+kind: Template
+apiVersion: v1
+objects:
   - apiVersion: image.openshift.io/v1
     kind: ImageStream
     metadata:
@@ -450,7 +453,7 @@ objects:
       creationTimestamp: null
       labels:
         build: ${APP_NAME}-init
-      name: ${APP_NAME}-init
+      name: ubuntu
     spec:
       lookupPolicy:
         local: false
@@ -499,7 +502,7 @@ objects:
       postCommit: {}
       resources: {}
       source:
-        contextDir: ${APP_NAME}-init
+        contextDir: mautic-init
         git:
           ref: ${GIT_REF}
           uri: ${GIT_REPO}
@@ -511,6 +514,7 @@ objects:
             name: ubuntu:latest
         type: Docker
       triggers:
+
       - type: ConfigChange
       - imageChange: {}
         type: ImageChange
