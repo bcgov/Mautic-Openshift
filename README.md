@@ -130,8 +130,8 @@ Within the builder, it will pre-populate two `slots` for you. We can click on th
 
 The email can be previewed by applying, then clicking on the `Public Preview URL`
 
-The email template can be modified if needed. To do so, change the mautic-init/themes/BCGov-Template/html/email.html.twig file, delete the var/www/html/themes/BCGov-Template in the pod terminal, and upload the mautic-init/themes/BCGov-Template directory using rsync.
+The email template can be modified if needed. To do so, change the mautic-init/themes/BCGov/html/email.html.twig file, delete the var/www/html/themes/BCGov in the pod terminal, and upload the mautic-init/themes/BCGov directory using rsync.
 
-- Example: `oc rsync ./mautic-init/themes/BCGov-Template <pod-name>:/var/www/html/themes`
+- Example: `oc rsync ./mautic-init/themes/BCGov <pod-name>:/var/www/html/themes`
 
-Alternatively, the contents of BCGov-Template can be zipped and uploaded through the mautic user interface.
+Alternatively, the contents of BCGov can be zipped and uploaded through the mautic user interface.
