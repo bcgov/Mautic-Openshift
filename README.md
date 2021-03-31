@@ -128,6 +128,8 @@ The `subject` field will be the title of the email, `Internal Name` will be the 
 The contents of the email can be set in the `builder`.
 Within the builder, it will pre-populate two `slots` for you. We can click on the slots to edit the contents or delete them and add our own. A slot can be added by dragging a slot type from the right and dropping it in the builder section.
 
-At the end of the email content, include `{unsubscribe_text}` to attach the unsubscribe message.
-
 The email can be previewed by applying, then clicking on the `Public Preview URL`
+
+The email template can be modified if needed. To do so, change the mautic-init/themes/BCGov-Template/html/email.html.twig file, delete the var/www/html/themes/BCGov-Template in the pod terminal, and upload the mautic-init/themes/BCGov-Template directory using rsync.
+
+- Example: `oc rsync ./mautic-init/themes/BCGov-Template <pod-name>:/var/www/html/themes`
