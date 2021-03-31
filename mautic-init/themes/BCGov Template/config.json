@@ -1,7 +1,7 @@
 {
-  "name": "BCGov Template",
-  "author": "Mautic",
-  "authorUrl": "http://www.mautic.com",
+  "name": "BCGov",
+  "author": "BCGov",
+  "authorUrl": "https://bcdevexchange.org/",
   "features": [
     "email"
   ]
