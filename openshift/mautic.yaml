@@ -32,6 +32,7 @@ objects:
         app.openshift.io/vcs-uri: ${GIT_REPO}
         openshift.io/generated-by: OpenShiftWebConsole
       labels:
+        name: 'mautic'
         app: ${APP_NAME}
         group: ${APP_NAME}
         buildConfig: ${APP_NAME}
@@ -51,6 +52,7 @@ objects:
         openshift.io/generated-by: OpenShiftWebConsole
       generation: 1
       labels:
+        name: 'mautic'
         app: ${APP_NAME}
         buildConfig: ${APP_NAME}
         app.kubernetes.io/component: ${APP_NAME}
@@ -82,6 +84,18 @@ objects:
         requests:
           storage: 1Gi
       storageClassName: ${STORAGE_CLASS_NAME}
+  # - apiVersion: v1
+  #   kind: PersistentVolumeClaim
+  #   metadata:
+  #     name: ${APP_NAME}-theme
+  #   spec:
+  #     accessModes: 
+  #     - ReadWriteMany
+  #     volumeMode: Filesystem
+  #     resources:
+  #       requests:
+  #         storage: 1Gi
+  #     storageClassName: ${STORAGE_CLASS_NAME}
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     spec:
@@ -91,11 +105,12 @@ objects:
       selector:
         deploymentconfig: ${APP_NAME}
       strategy:
-        type: Rolling
+        type: Recreate
       template:
         metadata:
           creationTimestamp: null
           labels:
+            name: 'mautic'
             app: ${APP_NAME}
             deploymentconfig: ${APP_NAME}
         spec:
@@ -109,9 +124,23 @@ objects:
               claimName: ${APP_NAME}-php-config
           - name: ${APP_NAME}-cache-unsubscribe
             emptyDir: {}
+          - name: ${APP_NAME}-theme
+            emptyDir: {}
+            # persistentVolumeClaim:
+            #   claimName: ${APP_NAME}-theme
           - name: ${APP_NAME}-apache-conf
             configMap:
               name: ${APP_NAME}-apache-config
+          initContainers:
+            - env:
+              - name: VOLUME_PATH
+                value: /var/www/html/themes/
+              image: ${IMAGE_REGISTRY}/${NAMESPACE}/mautic-init:latest
+              name: mautic-init
+              imagePullPolicy: Always
+              volumeMounts:
+              - name: ${APP_NAME}-theme
+                mountPath: /var/www/html/themes/
           containers:
             - env:
                 - name: MAUTIC_DB_USER
@@ -157,6 +186,8 @@ objects:
                   mountPath: /var/www/html/app/config/
                 - name: ${APP_NAME}-cache-unsubscribe
                   mountPath: /var/www/html/app/../var/tmp/twig/
+                - name: ${APP_NAME}-theme
+                  mountPath: /var/www/html/themes/
           dnsPolicy: ClusterFirst
           restartPolicy: Always
           schedulerName: default-scheduler
@@ -181,6 +212,7 @@ objects:
         openshift.io/generated-by: OpenShiftWebConsole
       generation: 11
       labels:
+        name: 'mautic'
         app: ${APP_NAME}
         deploymentConfig: ${APP_NAME}
         app.kubernetes.io/component: ${APP_NAME}
@@ -204,6 +236,7 @@ objects:
       annotations:
         openshift.io/host.generated: 'true'
       labels:
+        name: 'mautic'
         app: ${APP_NAME}
         deploymentConfig: ${APP_NAME}
         app.kubernetes.io/component: ${APP_NAME}
@@ -228,6 +261,7 @@ objects:
         app.openshift.io/vcs-uri: ${GIT_REPO}
         openshift.io/generated-by: OpenShiftWebConsole
       labels:
+        name: 'mautic'
         app: ${APP_NAME}
         deploymentConfig: ${APP_NAME}
         app.kubernetes.io/component: ${APP_NAME}
@@ -240,6 +274,7 @@ objects:
       annotations:
         openshift.io/host.generated: 'true'
       labels:
+        name: 'mautic'
         app: ${APP_NAME}
         deploymentConfig: ${APP_NAME}
         app.kubernetes.io/component: ${APP_NAME}
@@ -302,6 +337,7 @@ objects:
       annotations:
         template.openshift.io/expose-uri: 'mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="mariadb")].port}'
       labels:
+        name: 'mautic'
         app: ${APP_NAME}
         deploymentConfig: ${APP_NAME}-db
         group: ${APP_NAME}
@@ -402,10 +438,87 @@ objects:
         app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"${APP_NAME}"}]'
       generation: 2
       labels:
+        name: 'mautic'
         deploymentConfig: ${APP_NAME}-db
         group: ${APP_NAME}
         app: ${APP_NAME}
       name: ${APP_NAME}-db
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewBuild
+      creationTimestamp: null
+      labels:
+        name: 'mautic'
+        build: ${APP_NAME}-init
+      name: ubuntu
+    spec:
+      lookupPolicy:
+        local: false
+      tags:
+      - annotations:
+          openshift.io/imported-from: ubuntu:latest
+        from:
+          kind: DockerImage
+          name: ubuntu:latest
+        generation: null
+        importPolicy: {}
+        name: latest
+        referencePolicy:
+          type: ""
+    status:
+      dockerImageRepository: ""
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewBuild
+      creationTimestamp: null
+      labels:
+        name: 'mautic'
+        build: ${APP_NAME}-init
+      name: mautic-init
+    spec:
+      lookupPolicy:
+        local: false
+    status:
+      dockerImageRepository: ""
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewBuild
+      creationTimestamp: null
+      labels:
+        name: 'mautic'
+        build: ${APP_NAME}-init
+      name: ${APP_NAME}-init
+    spec:
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: mautic-init:latest
+      postCommit: {}
+      resources: {}
+      source:
+        contextDir: mautic-init
+        git:
+          ref: ${GIT_REF}
+          uri: ${GIT_REPO}
+        type: Git
+      strategy:
+        dockerStrategy:
+          from:
+            kind: ImageStreamTag
+            name: ubuntu:latest
+        type: Docker
+      triggers:
+      - type: ConfigChange
+    status:
+      lastVersion: 0
+
 parameters:
 - name: APP_NAME
   displayName: App name
@@ -422,6 +535,7 @@ parameters:
 - name: NAMESPACE
   displayName: Namespace
   description: the namespace of the app
+  required: true
 - description: A name used for all objects
   displayName: IMAGE_TAG
   name: IMAGE_TAG
