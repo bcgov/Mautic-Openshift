@@ -118,7 +118,13 @@ When creating a form it is important that the `Successful Submit Action` is set 
 
 Under the `Fields` tab, a new `Email` field should be created with a label value of `Email`. This is important since the Mautic Subscription app utilizes the label value as `Email`
 
-Under the `Actions` tab, a new submit action to `Modify contact segments` should be created. You can choose to `Add contact to selected segment(s)` for the subscribe form or `Remove contact from selected segment(s)` for the unsubscribe form. The name of the action can be customized.
+Under the `Actions` tab, two new actions should be created: `Modify contact segments` and `Send Email to Contact`. 
+
+- For `Modify contact segments`, you can choose to `Add contact to selected segment(s)` for the subscribe form or `Remove contact from selected segment(s)` for the unsubscribe form. The name of the 
+action can be customized.
+
+- For `Send Email to Contact`, you can choose a new Template Email to be sent out in the `Email to Send` section.
+
 
 ### Email
 A `New Segment Email` can be set up under the `Channels` -> `Emails` tab. For a basic layout the Blank theme can be used. It is important to note that an email template can only be sent to a contact once.
