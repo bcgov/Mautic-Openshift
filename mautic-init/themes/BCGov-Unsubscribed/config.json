@@ -1,0 +1,8 @@
+{
+  "name": "BCGov-Unsubscribed-Email",
+  "author": "BCGov",
+  "authorUrl": "https://bcdevexchange.org/",
+  "features": [
+    "email"
+  ]
+}
