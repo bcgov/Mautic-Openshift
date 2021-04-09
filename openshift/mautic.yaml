@@ -461,7 +461,7 @@ objects:
           openshift.io/imported-from: ubuntu:latest
         from:
           kind: DockerImage
-          name: ubuntu:latest
+          name: docker.io/ubuntu:latest
         generation: null
         importPolicy: {}
         name: latest
