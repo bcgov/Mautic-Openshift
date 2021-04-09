@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM docker.io/ubuntu:latest
 
 ENV VOLUME_PATH=/var/www/html/themes
 

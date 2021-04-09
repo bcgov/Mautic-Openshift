@@ -123,7 +123,7 @@ Under the `Actions` tab, two new actions should be created: `Modify contact segm
 - For `Modify contact segments`, you can choose to `Add contact to selected segment(s)` for the subscribe form or `Remove contact from selected segment(s)` for the unsubscribe form. The name of the 
 action can be customized.
 
-- For `Send Email to Contact`, you can choose a new Template Email to be sent out in the `Email to Send` section.
+- For `Send Email to Contact`, you can choose a new `Template Email` to be sent out in the `Email to Send` section.
 
 
 ### Email
