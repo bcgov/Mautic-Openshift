@@ -48,11 +48,10 @@ if [ -z "$SEGMENT_ID" ]; then
 fi
 
 # COLORS
-RED=`tput setaf 1`
 WHITE=`tput setaf 7`
 CYAN=`tput setaf 6`
 RESET=`tput sgr0`
-BOLD=`tput bold`
+
 AUTH=$(echo $USERNAME:$PASSWORD)
 
 CSV_JSON=$(cat $CSV_FILE | python -c 'import csv, json, sys; print(json.dumps([dict(r) for r in csv.DictReader(sys.stdin)]))')
