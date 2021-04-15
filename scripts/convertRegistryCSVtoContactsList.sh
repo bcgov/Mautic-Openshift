@@ -56,13 +56,12 @@ AUTH=$(echo $USERNAME:$PASSWORD)
 
 CSV_JSON=$(cat $CSV_FILE | python -c 'import csv, json, sys; print(json.dumps([dict(r) for r in csv.DictReader(sys.stdin)]))')
 
-POV=$(echo $CSV_JSON | jq '.[].POEmail | {email: .}' -r)
+POS=$(echo $CSV_JSON | jq '.[].POEmail | {email: .}' -r)
 TCS=$(echo $CSV_JSON | jq '.[].TCEmail | {email: .}' -r)
 LIST="$POS$TCS"
 FINAL_LIST=$(echo $LIST | jq -s '.' -r)
 
 ZERO='"0"'
-
 echo "${RESET}Attempting with username: ${CYAN}$USERNAME${RESET} using ${WHITE}Basic Auth.${RESET}"
 echo "If this does not work it means either the credentials are incorrect or mautic has incorrectly cached state"
 echo "${CYAN}More info:$NC https://forum.mautic.org/t/need-help-with-mautic-api-and-basicauth/16129/2${RESET}"
