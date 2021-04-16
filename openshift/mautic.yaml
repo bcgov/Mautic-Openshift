@@ -21,7 +21,9 @@ objects:
         type: Git
       strategy:
         dockerStrategy:
-          dockerfilePath: Dockerfile
+          from:
+          kind: DockerImage
+          name: docker.io/php:7.3-apache
         type: Docker
       successfulBuildsHistoryLimit: 5
       triggers:
