@@ -434,7 +434,7 @@ objects:
               emptyDir: {}
             - persistentVolumeClaim:
                 claimName: ${APP_NAME}-db-backup
-              name: ${APP_NAME}--db-backup
+              name: ${APP_NAME}-db-backup
       test: false
     metadata:
       annotations:
