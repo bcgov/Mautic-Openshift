@@ -92,6 +92,9 @@ objects:
       accessModes: 
       - ReadWriteOnce
       volumeMode: Filesystem
+      resources:
+        requests:
+          storage: 1Gi
       storageClassName: netapp-file-backup
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
