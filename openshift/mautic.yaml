@@ -84,18 +84,15 @@ objects:
         requests:
           storage: 1Gi
       storageClassName: ${STORAGE_CLASS_NAME}
-  # - apiVersion: v1
-  #   kind: PersistentVolumeClaim
-  #   metadata:
-  #     name: ${APP_NAME}-theme
-  #   spec:
-  #     accessModes: 
-  #     - ReadWriteMany
-  #     volumeMode: Filesystem
-  #     resources:
-  #       requests:
-  #         storage: 1Gi
-  #     storageClassName: ${STORAGE_CLASS_NAME}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: ${APP_NAME}-db-backup
+    spec:
+      accessModes: 
+      - ReadWriteOnce
+      volumeMode: Filesystem
+      storageClassName: netapp-file-backup
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     spec:
@@ -126,8 +123,6 @@ objects:
             emptyDir: {}
           - name: ${APP_NAME}-theme
             emptyDir: {}
-            # persistentVolumeClaim:
-            #   claimName: ${APP_NAME}-theme
           - name: ${APP_NAME}-apache-conf
             configMap:
               name: ${APP_NAME}-apache-config
@@ -421,6 +416,8 @@ objects:
                   name: ${APP_NAME}-mariadb-data
                 - mountPath: /var/lib/mysql
                   name: ${APP_NAME}-mariadb-docker
+                - mountPath: /var/lib/mysql/backup
+                  name: ${APP_NAME}-db-backup
           dnsPolicy: ClusterFirst
           restartPolicy: Always
           schedulerName: default-scheduler
@@ -432,6 +429,9 @@ objects:
               name: ${APP_NAME}-mariadb-data
             - name: ${APP_NAME}-mariadb-docker
               emptyDir: {}
+            - persistentVolumeClaim:
+                claimName: ${APP_NAME}-db-backup
+              name: ${APP_NAME}--db-backup
       test: false
     metadata:
       annotations:
