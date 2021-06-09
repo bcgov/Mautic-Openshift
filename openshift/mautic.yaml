@@ -86,18 +86,30 @@ objects:
         requests:
           storage: 1Gi
       storageClassName: ${STORAGE_CLASS_NAME}
-  # - apiVersion: v1
-  #   kind: PersistentVolumeClaim
-  #   metadata:
-  #     name: ${APP_NAME}-theme
-  #   spec:
-  #     accessModes: 
-  #     - ReadWriteMany
-  #     volumeMode: Filesystem
-  #     resources:
-  #       requests:
-  #         storage: 1Gi
-  #     storageClassName: ${STORAGE_CLASS_NAME}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: ${APP_NAME}-media-images
+    spec:
+      accessModes: 
+      - ReadWriteOnce
+      volumeMode: Filesystem
+      resources:
+        requests:
+          storage: 0.5Gi
+      storageClassName: ${STORAGE_CLASS_NAME}
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: ${APP_NAME}-media-files
+    spec:
+      accessModes: 
+      - ReadWriteOnce
+      volumeMode: Filesystem
+      resources:
+        requests:
+          storage: 0.5Gi
+      storageClassName: ${STORAGE_CLASS_NAME}
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     spec:
@@ -124,12 +136,16 @@ objects:
           - name: ${APP_NAME}-php-config
             persistentVolumeClaim:
               claimName: ${APP_NAME}-php-config
+          - name: ${APP_NAME}-media-images
+            persistentVolumeClaim:
+              claimName: ${APP_NAME}-media-images
+          - name: ${APP_NAME}-media-files
+            persistentVolumeClaim:
+              claimName: ${APP_NAME}-media-files
           - name: ${APP_NAME}-cache-unsubscribe
             emptyDir: {}
           - name: ${APP_NAME}-theme
             emptyDir: {}
-            # persistentVolumeClaim:
-            #   claimName: ${APP_NAME}-theme
           - name: ${APP_NAME}-apache-conf
             configMap:
               name: ${APP_NAME}-apache-config
@@ -190,6 +206,10 @@ objects:
                   mountPath: /var/www/html/app/../var/tmp/twig/
                 - name: ${APP_NAME}-theme
                   mountPath: /var/www/html/themes/
+                - name: ${APP_NAME}-media-images
+                  mountPath: /var/www/html/media/images
+                - name: ${APP_NAME}-media-files
+                  mountPath: /var/www/html/media/files
           dnsPolicy: ClusterFirst
           restartPolicy: Always
           schedulerName: default-scheduler
