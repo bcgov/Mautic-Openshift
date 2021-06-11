@@ -1,4 +1,4 @@
-FROM docker.io/php:7.3-apache
+FROM docker-remote.artifacts.developer.gov.bc.ca/php:7.3-apache
 
 LABEL vendor="Mautic"
 LABEL maintainer="Luiz Eduardo Oliveira Fonseca <luiz@powertic.com>"
