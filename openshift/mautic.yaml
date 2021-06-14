@@ -92,7 +92,7 @@ objects:
       name: ${APP_NAME}-media-images
     spec:
       accessModes: 
-      - ReadWriteOnce
+      - ReadWriteMany
       volumeMode: Filesystem
       resources:
         requests:
@@ -104,7 +104,7 @@ objects:
       name: ${APP_NAME}-media-files
     spec:
       accessModes: 
-      - ReadWriteOnce
+      - ReadWriteMany
       volumeMode: Filesystem
       resources:
         requests:
