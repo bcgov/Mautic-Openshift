@@ -101,6 +101,37 @@ Additionally, you may need to configure your security settings in Gmail to turn 
 
     Make sure to apply and save your changes.
 
+### Database Backup
+Database backups can be created using [backup-container](https://github.com/BCDevOps/backup-container). Files utilized can be found in the backup directory.
+The commands used to deploy the backup container are:
+
+1. Build the image in the tools namespace
+`oc -n de0974-tools process -f ./openshift/templates/backup/backup-build.yaml -p DOCKER_FILE_PATH=Dockerfile_MariaDB -p NAME=mautic-db-backup OUTPUT_IMAGE_TAG=prod | oc -n de0974-tools create -f -`
+
+2. Label the database to be backed up with backup=true and env=<output-image-tag>
+
+3. Create configmap for the backup configuration
+`oc -n de0974-prod create configmap backup-conf --from-file=./backup-container/config/backup.conf`
+`oc -n de0974-prod label configmap backup-conf app=mautic-db-backup`
+
+4. Deploy the container
+```
+oc -n de0974-prod process -f ./openshift/templates/backup/backup-deploy.yaml \
+  -p NAME=mautic-db-backup \
+  -p IMAGE_NAMESPACE=de0974-tools \
+  -p SOURCE_IMAGE_NAME=mautic-db-backup \
+  -p TAG_NAME=prod \
+  -p BACKUP_VOLUME_NAME=mautic-db-backup-pvc \
+  -p BACKUP_VOLUME_SIZE=1Gi \
+  -p VERIFICATION_VOLUME_SIZE=10Gi \
+  -p VERIFICATION_VOLUME_CLASS=netapp-file-standard \
+  -p DATABASE_DEPLOYMENT_NAME=mautic-db \
+  -p DATABASE_USER_KEY_NAME=database-user \
+  -p DATABASE_PASSWORD_KEY_NAME=database-password \
+  -p ENVIRONMENT_FRIENDLY_NAME='mautic-db backups' \
+  -p ENVIRONMENT_NAME=de0974-prod | oc -n de0974-prod create -f -
+```
+
 ## Mautic Workflow
 
 ### Segment
