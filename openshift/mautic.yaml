@@ -185,8 +185,12 @@ objects:
               name: ${APP_NAME}
               resources:
                 cpu:
-                  requests: 1000m
-                  limits: 1500m
+                  limits:
+                    cpu: 2000m
+                    memory: 2Gi
+                  requests:
+                    cpu: 50m
+                    memory: 256Mi
               terminationMessagePath: /dev/termination-log
               terminationMessagePolicy: File
               volumeMounts:
