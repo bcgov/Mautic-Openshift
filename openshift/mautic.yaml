@@ -438,11 +438,11 @@ objects:
                 timeoutSeconds: 1
               resources:
                 limits:
-                  cpu: '1'
-                  memory: 1Gi
+                  cpu: 250m
+                  memory: 600Mi
                 requests:
-                  cpu: '.5'
-                  memory: .5Gi
+                  cpu: 50m
+                  memory: 200Mi
               terminationMessagePath: /dev/termination-log
               terminationMessagePolicy: File
               volumeMounts:
