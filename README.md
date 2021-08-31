@@ -3,8 +3,6 @@ This document contains both user documentation and developer documentation.
 
 # User Guide
 ## Community Users
-## Mautic Workflow
-
 ### Segment
 In Mautic, an email distribution list is called a `segment`. A segment can easily be created in the `Segments` tab by giving it a name and description.
 
