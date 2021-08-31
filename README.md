@@ -2,6 +2,76 @@
 This document contains both user documentation and developer documentation.
 
 # User Guide
+## Community Users
+## Mautic Workflow
+
+### Segment
+In Mautic, an email distribution list is called a `segment`. A segment can easily be created in the `Segments` tab by giving it a name and description.
+
+### Email
+A `New Segment Email` can be set up under the `Channels` -> `Emails` tab. It is important to note that an email template can only be sent to a contact once. This means that since Mautic keeps track of users that a segment email is sent to, only newly subscribed users will receive that email if it is sent out again.
+
+In the `Advanced` tab, there are options to change the email address that the mailing list subscribers will receive the emails from. By setting this up, subscribed users will see the configured email as the sender rather than the admin account's email address. Similarly, the subscribed users will be able to reply to the configured email as well.
+
+The `subject` field will be the title of the email, `Internal Name` will be the name of the email template tracked within Mautic, and the `Contact Segment` should be chosen as the segment to send the email to.
+
+The contents of the email can be set in the `builder`.
+Within the builder, the email templates will have `slots` for you to click on and edit the contents.
+
+The email can be previewed by applying, then clicking on the `Public Preview URL`
+
+The email template can be modified if needed. To do so, please contact the admin to update the templates in the source code.
+
+## Admins
+### Setting up Mautic
+
+1. Go to the Mautic Deployment route. This will lead you to the Mautic Installation - Environment Check page. 
+The installer may suggest some recommendations for the configuration. Review these recommendations and go to the next step.
+
+2. On the Mautic Installation - Database Setup page, the required input should be pre-filled for you. Go to the next page.
+
+3. On the Mautic Installation - Administrative User page, create the admin user as required.
+
+4. On the Mautic Installation - Email Configuration page, select "Other SMTP Server" as the Mailer Transport.
+To use the government server, use the following values:
+- Server: apps.smtp.gov.bc.ca
+- Port: 25
+- Encryption: None
+- Authentication mode: Login
+- Username: firstname.lastname
+- Password: Login Password
+
+To use Gmail, use the following values:
+- Server: smtp.gmail.com
+- Port: 587
+- Encryption: TLS
+- Authentication mode: Login
+- Username: Gmail Username
+- Password: Gmail Password
+
+Additionally, you may need to configure your security settings in Gmail to turn on "Less secure app access" at https://myaccount.google.com/security as well as turn on "Display Unlock Captcha" at https://accounts.google.com/b/0/DisplayUnlockCaptcha.
+
+5. After logging in, navigate to the settings cog in the top right of the page -> configuration -> Email Settings and use the `Test Connection` and `Send Test Email` buttons to verify that the email is set up properly. 
+
+    To allow emails to be sent out to contacts, you must change the Frequency Rule within Mautic.
+    Scrolling down, you will see the "Default Frequency Rule". This number will be the maximum number of emails that can be sent to a user in the given time period. Setting this number to a reasonable value will help prevent unintentional email spamming.
+
+    To customize the unsubscribe text that is to be displayed at the end of an email, scroll down to "Unsubscribe Settings". Replace the `|URL|` text under `Text for the {unsubscribe_text} token` with the mautic subsription app url. Doing so will allow us to easily generate the unsubscribe message in an email by adding `{unsubscribe_text}` to an email.
+
+    Make sure to apply and save your changes.
+
+### Setting up roles
+To assign users with their own roles, a role can be created in the settings cog in the top right -> Roles. Recommended permissions settings are `View Own`, `Edit Own`, `Create`, and `Delete Own` for all permissions.
+
+### Setting up subscription confirmation emails
+Set up a subscription confirmation email by going to `Channels` -> `Emails` -> `New Template Email`. The email ID must match the CONFIRMATION_EMAIL_ID field in the `api/.env` file in the subscription app.
+
+### Changing email themes
+ Email themes can be changed in `mautic-init/themes`. The html can be eddited in the `email/html.twig` files. To update a theme, delete the email theme in `var/www/html/themes/[theme-name]` and either redeploy the app or upload the new email theme directory using rsync.
+
+- Example: `oc rsync ./mautic-init/themes/BCGov <pod-name>:/var/www/html/themes`
+
+Alternatively, the contents of BCGov can be zipped and uploaded through the mautic user interface.
 
 # Developer Guide
 
@@ -10,7 +80,6 @@ This document contains both user documentation and developer documentation.
 ![Architecture Diagram](architecture-diagram.png)
 
 # Setting up Mautic on Openshift
-This guide will go over deploying Mautic on openshift as well as a brief Mautic setup guide.
 
 ## Building and Deploying Mautic on Openshift
 ### Create the network security policy
@@ -58,43 +127,6 @@ To clean up mautic artifacts, use the command:
     `oc delete all,secret,configmap -l app=<app-name> -n <tools-namespace>`
 - Example: `oc delete all,secret,configmap -l app=mautic -n de0974-tools`
 
-## Setting up Mautic
-
-1. Go to the Mautic Deployment route. This will lead you to the Mautic Installation - Environment Check page. 
-The installer may suggest some recommendations for the configuration. Review these recommendations and go to the next step.
-
-2. On the Mautic Installation - Database Setup page, the required input should be pre-filled for you. Go to the next page.
-
-3. On the Mautic Installation - Administrative User page, create the admin user as required.
-
-4. On the Mautic Installation - Email Configuration page, select "Other SMTP Server" as the Mailer Transport.
-To use the government server, use the following values:
-- Server: apps.smtp.gov.bc.ca
-- Port: 25
-- Encryption: None
-- Authentication mode: Login
-- Username: firstname.lastname
-- Password: Login Password
-
-To use Gmail, use the following values:
-- Server: smtp.gmail.com
-- Port: 587
-- Encryption: TLS
-- Authentication mode: Login
-- Username: Gmail Username
-- Password: Gmail Password
-
-Additionally, you may need to configure your security settings in Gmail to turn on "Less secure app access" at https://myaccount.google.com/security as well as turn on "Display Unlock Captcha" at https://accounts.google.com/b/0/DisplayUnlockCaptcha.
-
-5. After logging in, navigate to the settings cog in the top right of the page -> configuration -> Email Settings and use the `Test Connection` and `Send Test Email` buttons to verify that the email is set up properly. 
-
-    To allow emails to be sent out to contacts, you must change the Frequency Rule within Mautic.
-    Scrolling down, you will see the "Default Frequency Rule". This number will be the maximum number of emails that can be sent to a user in the given time period. Setting this number to a reasonable value will help prevent unintentional email spamming.
-
-    To customize the unsubscribe text that is to be displayed at the end of an email, scroll down to "Unsubscribe Settings". Replace the `|URL|` text under `Text for the {unsubscribe_text} token` with the mautic subsription app url. Doing so will allow us to easily generate the unsubscribe message in an email by adding `{unsubscribe_text}` to an email.
-
-    Make sure to apply and save your changes.
-
 ### Database Backup
 Database backups can be created using [backup-container](https://github.com/BCDevOps/backup-container). Files utilized can be found in the backup directory.
 The commands used to deploy the backup container are:
@@ -125,44 +157,3 @@ oc -n de0974-prod process -f ./openshift/templates/backup/backup-deploy.yaml \
   -p ENVIRONMENT_FRIENDLY_NAME='mautic-db backups' \
   -p ENVIRONMENT_NAME=de0974-prod | oc -n de0974-prod create -f -
 ```
-
-## Mautic Workflow
-
-### Segment
-In Mautic, an email distribution list is called a `segment`. A segment can easily be created in the `Segments` tab by giving it a name.
-
-### Form
-Forms allow users to subscribe/unsubscribe themselves using the Mautic Subscription App. For each segment two forms should be created: subscribe and unsubscribe. By default the mautic subscription app uses the subscribe form as form1 and the unsubscribe form as form2.
-
-A form can be created by selecting `Components`->`Forms`->`New Standalone Form`.
-The forms' name can be customized to any name but they must match the SUBSCRIBE_FORM and UNSUBSCRIBE_FORM parameters for the Mautic Subscription App.
-
-When creating a form it is important that the `Successful Submit Action` is set to Redirect URL and that the Redirect URL/Message is set to https://[mautic-subscription-app-url]/subscribed for the subscribed form and https://[mautic-subscription-app-url]/unsubscribed for the unsubscribe form.
-
-- Example: ```https://mautic-subscription.apps.silver.devops.gov.bc.ca/subscribed``` and ```https://mautic-subscription.apps.silver.devops.gov.bc.ca/unsubscribed```
-
-Under the `Fields` tab, a new `Email` field should be created with a label value of `Email`. This is important since the Mautic Subscription app utilizes the label value as `Email`
-
-Under the `Actions` tab, two new actions should be created: `Modify contact segments` and `Send Email to Contact`. 
-
-- For `Modify contact segments`, you can choose to `Add contact to selected segment(s)` for the subscribe form or `Remove contact from selected segment(s)` for the unsubscribe form. The name of the 
-action can be customized.
-
-- For `Send Email to Contact`, you can choose a new `Template Email` to be sent out in the `Email to Send` section.
-
-
-### Email
-A `New Segment Email` can be set up under the `Channels` -> `Emails` tab. For a basic layout the Blank theme can be used. It is important to note that an email template can only be sent to a contact once.
-
-The `subject` field will be the title of the email, `Internal Name` will be the name of the email template tracked within Mautic, and the `Contact Segment` should be chosen as the segment to send the email to.
-
-The contents of the email can be set in the `builder`.
-Within the builder, it will pre-populate two `slots` for you. We can click on the slots to edit the contents or delete them and add our own. A slot can be added by dragging a slot type from the right and dropping it in the builder section.
-
-The email can be previewed by applying, then clicking on the `Public Preview URL`
-
-The email template can be modified if needed. To do so, change the mautic-init/themes/BCGov/html/email.html.twig file, delete the var/www/html/themes/BCGov in the pod terminal, and upload the mautic-init/themes/BCGov directory using rsync.
-
-- Example: `oc rsync ./mautic-init/themes/BCGov <pod-name>:/var/www/html/themes`
-
-Alternatively, the contents of BCGov can be zipped and uploaded through the mautic user interface.
