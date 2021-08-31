@@ -9,14 +9,19 @@ In Mautic, an email distribution list is called a `segment`. A segment can easil
 ### Email
 A `New Segment Email` can be set up under the `Channels` -> `Emails` tab. It is important to note that an email template can only be sent to a contact once. This means that since Mautic keeps track of users that a segment email is sent to, only newly subscribed users will receive that email if it is sent out again.
 
+
 In the `Advanced` tab, there are options to change the email address that the mailing list subscribers will receive the emails from. By setting this up, subscribed users will see the configured email as the sender rather than the admin account's email address. Similarly, the subscribed users will be able to reply to the configured email as well.
 
+
 The `subject` field will be the title of the email, `Internal Name` will be the name of the email template tracked within Mautic, and the `Contact Segment` should be chosen as the segment to send the email to.
+
 
 The contents of the email can be set in the `builder`.
 Within the builder, the email templates will have `slots` for you to click on and edit the contents.
 
+
 The email can be previewed by applying, then clicking on the `Public Preview URL`
+
 
 The email template can be modified if needed. To do so, please contact the admin to update the templates in the source code.
 
@@ -120,6 +125,10 @@ Alternatively, the contents of BCGov can be zipped and uploaded through the maut
 
     - Example: ```oc process -f ./openshift/mautic.yaml -p APP_NAME=mautic -p GIT_REF=main -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p NAMESPACE=de0974-tools -p STORAGE_CLASS_NAME=netapp-file-standard -p IMAGE_TAG=3.1.2 | oc apply -f - -n de0974-tools```
     
+3. **Start the builds**
+Start the builds for Mautic and the init container using `oc start-build [app-name]` and `oc start-build [app-name]-init`
+When the builds are finished, redeploy the deploymentConfig.
+
 ## Cleaning up the namespaces
 To clean up mautic artifacts, use the command: 
     `oc delete all,secret,configmap -l app=<app-name> -n <tools-namespace>`
