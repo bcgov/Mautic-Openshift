@@ -1,11 +1,16 @@
+# Summary
+This document contains both user documentation and developer documentation.
+
+# User Guide
+
+# Developer Guide
+
 # Architecture Diagram
 
 ![Architecture Diagram](architecture-diagram.png)
 
 # Setting up Mautic on Openshift
-This guide will go over two methods to build and deploy Mautic on openshift: using argo and using openshift commands.
-
-The guide will also go over a brief Mautic setup guide.
+This guide will go over deploying Mautic on openshift as well as a brief Mautic setup guide.
 
 ## Building and Deploying Mautic on Openshift
 ### Create the network security policy
