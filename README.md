@@ -14,17 +14,6 @@ The guide will also go over a brief Mautic setup guide.
 
 - Example: ```oc process -f ./openshift/nsp.yaml -p APP_NAME=mautic -p NAMESPACE=de0974 -p ENVIRONMENT=tools | oc apply -f -```
 
-
-### CI/CD Argo
-
-To build and deploy in the tools namespace using the argo pipeline, use the following command:
-
-```argo submit argo/mautic.build.yaml -p GIT_REF=<branch-name> -p GIT_REPO=<git-repo> -p  NAMESPACE=<tools-namespace> -p APP_NAME=<app-name> -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=<storage-class-name> -p DATABASE_NAME=[database-name] -p DATABASE_USER=[database-user-name] -p DATABASE_USER_PASSWORD=[database-user-password] -p DATABASE_ROOT_PASSWORD=[database-user-password]```
-
-Note that the DATABASE_USER, DATABASE_USER_PASSWORD, and DATABASE_ROOT_PASSWORD must only consist of alphanumerical or `_` characters.
-
-- Example: ```argo submit argo/mautic.build.yaml -p GIT_REF=clean-state -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p  NAMESPACE=de0974-tools -p APP_NAME=mautic -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=netapp-file-standard -p DATABASE_NAME=mautic_db -p DATABASE_USER=mautic_db_user -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2```
-
 ### Using manual commands
 
 1. **Process and apply the mariadb secret.yaml**
