@@ -1,70 +1,32 @@
-# Architecture Diagram
+# Summary
+This document contains both user documentation and developer documentation.
 
-![Architecture Diagram](architecture-diagram.png)
+# User Guide
+## Community Users
+### Segment
+In Mautic, an email distribution list is called a `segment`. A segment can easily be created in the `Segments` tab by giving it a name and description.
 
-# Setting up Mautic on Openshift
-This guide will go over two methods to build and deploy Mautic on openshift: using argo and using openshift commands.
-
-The guide will also go over a brief Mautic setup guide.
-
-## Building and Deploying Mautic on Openshift
-### Create the network security policy
-   First, create the network security policies using the command:
-   ```oc process -f ./openshift/nsp.yaml -p APP_NAME=<app-name> -p NAMESPACE=<namespace> -p ENVIRONMENT=<environment> | oc apply -f -```
-
-- Example: ```oc process -f ./openshift/nsp.yaml -p APP_NAME=mautic -p NAMESPACE=de0974 -p ENVIRONMENT=tools | oc apply -f -```
+### Email
+A `New Segment Email` can be set up under the `Channels` -> `Emails` tab. It is important to note that an email template can only be sent to a contact once. This means that since Mautic keeps track of users that a segment email is sent to, only newly subscribed users will receive that email if it is sent out again.
 
 
-### CI/CD Argo
+In the `Advanced` tab, there are options to change the email address that the mailing list subscribers will receive the emails from. By setting this up, subscribed users will see the configured email as the sender rather than the admin account's email address. Similarly, the subscribed users will be able to reply to the configured email as well.
 
-To build and deploy in the tools namespace using the argo pipeline, use the following command:
 
-```argo submit argo/mautic.build.yaml -p GIT_REF=<branch-name> -p GIT_REPO=<git-repo> -p  NAMESPACE=<tools-namespace> -p APP_NAME=<app-name> -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=<storage-class-name> -p DATABASE_NAME=[database-name] -p DATABASE_USER=[database-user-name] -p DATABASE_USER_PASSWORD=[database-user-password] -p DATABASE_ROOT_PASSWORD=[database-user-password]```
+The `subject` field will be the title of the email, `Internal Name` will be the name of the email template tracked within Mautic, and the `Contact Segment` should be chosen as the segment to send the email to.
 
-Note that the DATABASE_USER, DATABASE_USER_PASSWORD, and DATABASE_ROOT_PASSWORD must only consist of alphanumerical or `_` characters.
 
-- Example: ```argo submit argo/mautic.build.yaml -p GIT_REF=clean-state -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p  NAMESPACE=de0974-tools -p APP_NAME=mautic -p IMAGE_TAG=3.1.2 -p STORAGE_CLASS_NAME=netapp-file-standard -p DATABASE_NAME=mautic_db -p DATABASE_USER=mautic_db_user -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2```
+The contents of the email can be set in the `builder`.
+Within the builder, the email templates will have `slots` for you to click on and edit the contents.
 
-### Using manual commands
 
-1. **Process and apply the mariadb secret.yaml**
+The email can be previewed by applying, then clicking on the `Public Preview URL`
 
-    Create the secret using the command:
-    ```
-        oc process -f ./openshift/secret.yaml \
-        -p NAME=<name> \
-        -p DATABASE_NAME=<database-name> \
-        -p DATABASE_USER=<database-user-name> \
-        -p DATABASE_USER_PASSWORD=<database-user-password> \
-        -p DATABASE_ROOT_PASSWORD=<database-root-password> \
-        | oc apply -f - -n <namespace>
-    ```
 
-    The parameters can only contain alphanumeric and underscore characters.
-    
-    - Example: ```oc process -f ./openshift/secret.yaml -p APP_NAME=mautic -p DATABASE_NAME=mautic_db -p DATABASE_USER=mautic_db_user -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2 | oc apply -f - -n de0974-tools```
+The email template can be modified if needed. To do so, please contact the admin to update the templates in the source code.
 
-2. **Process and apply the mautic.yaml**
-    ```
-        oc process -f ./openshift/mautic.yaml \
-        -p APP_NAME=<app-name> \
-        -p GIT_REF=<git-branch> \
-        -p GIT_REPO=<git-repo> \
-        -p NAMESPACE=<namespace> \
-        -p STORAGE_CLASS_NAME=<storage-class-name> \
-        -p IMAGE_TAG=3.1.2 \\
-        | oc apply -f - -n <namespace>
-
-    ```
-
-    - Example: ```oc process -f ./openshift/mautic.yaml -p APP_NAME=mautic -p GIT_REF=main -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p NAMESPACE=de0974-tools -p STORAGE_CLASS_NAME=netapp-file-standard -p IMAGE_TAG=3.1.2 | oc apply -f - -n de0974-tools```
-    
-## Cleaning up the namespaces
-To clean up mautic artifacts, use the command: 
-    `oc delete all,secret,configmap -l app=<app-name> -n <tools-namespace>`
-- Example: `oc delete all,secret,configmap -l app=mautic -n de0974-tools`
-
-## Setting up Mautic
+## Admins
+### Setting up Mautic
 
 1. Go to the Mautic Deployment route. This will lead you to the Mautic Installation - Environment Check page. 
 The installer may suggest some recommendations for the configuration. Review these recommendations and go to the next step.
@@ -101,6 +63,77 @@ Additionally, you may need to configure your security settings in Gmail to turn 
 
     Make sure to apply and save your changes.
 
+### Setting up roles
+To assign users with their own roles, a role can be created in the settings cog in the top right -> Roles. Recommended permissions settings are `View Own`, `Edit Own`, `Create`, and `Delete Own` for all permissions.
+
+### Setting up subscription confirmation emails
+Set up a subscription confirmation email by going to `Channels` -> `Emails` -> `New Template Email`. The email ID must match the CONFIRMATION_EMAIL_ID field in the `api/.env` file in the subscription app.
+
+### Changing email themes
+ Email themes can be changed in `mautic-init/themes`. The html can be eddited in the `email/html.twig` files. To update a theme, delete the email theme in `var/www/html/themes/[theme-name]` and either redeploy the app or upload the new email theme directory using rsync.
+
+- Example: `oc rsync ./mautic-init/themes/BCGov <pod-name>:/var/www/html/themes`
+
+Alternatively, the contents of BCGov can be zipped and uploaded through the mautic user interface.
+
+# Developer Guide
+
+# Architecture Diagram
+
+![Architecture Diagram](architecture-diagram.png)
+
+# Setting up Mautic on Openshift
+
+## Building and Deploying Mautic on Openshift
+### Create the network security policy
+   First, create the network security policies using the command:
+   ```oc process -f ./openshift/nsp.yaml -p APP_NAME=<app-name> -p NAMESPACE=<namespace> -p ENVIRONMENT=<environment> | oc apply -f -```
+
+- Example: ```oc process -f ./openshift/nsp.yaml -p APP_NAME=mautic -p NAMESPACE=de0974 -p ENVIRONMENT=tools | oc apply -f -```
+
+### Using manual commands
+
+1. **Process and apply the mariadb secret.yaml**
+
+    Create the secret using the command:
+    ```
+        oc process -f ./openshift/secret.yaml \
+        -p NAME=<name> \
+        -p DATABASE_NAME=<database-name> \
+        -p DATABASE_USER=<database-user-name> \
+        -p DATABASE_USER_PASSWORD=<database-user-password> \
+        -p DATABASE_ROOT_PASSWORD=<database-root-password> \
+        | oc apply -f - -n <namespace>
+    ```
+
+    The parameters can only contain alphanumeric and underscore characters.
+    
+    - Example: ```oc process -f ./openshift/secret.yaml -p APP_NAME=mautic -p DATABASE_NAME=mautic_db -p DATABASE_USER=mautic_db_user -p DATABASE_USER_PASSWORD=password -p DATABASE_ROOT_PASSWORD=password2 | oc apply -f - -n de0974-tools```
+
+2. **Process and apply the mautic.yaml**
+    ```
+        oc process -f ./openshift/mautic.yaml \
+        -p APP_NAME=<app-name> \
+        -p GIT_REF=<git-branch> \
+        -p GIT_REPO=<git-repo> \
+        -p NAMESPACE=<namespace> \
+        -p STORAGE_CLASS_NAME=<storage-class-name> \
+        -p IMAGE_TAG=3.1.2 \\
+        | oc apply -f - -n <namespace>
+
+    ```
+
+    - Example: ```oc process -f ./openshift/mautic.yaml -p APP_NAME=mautic -p GIT_REF=main -p GIT_REPO=https://github.com/bcgov/mautic-openshift -p NAMESPACE=de0974-tools -p STORAGE_CLASS_NAME=netapp-file-standard -p IMAGE_TAG=3.1.2 | oc apply -f - -n de0974-tools```
+    
+3. **Start the builds**
+Start the builds for Mautic and the init container using `oc start-build [app-name]` and `oc start-build [app-name]-init`
+When the builds are finished, redeploy the deploymentConfig.
+
+## Cleaning up the namespaces
+To clean up mautic artifacts, use the command: 
+    `oc delete all,secret,configmap -l app=<app-name> -n <tools-namespace>`
+- Example: `oc delete all,secret,configmap -l app=mautic -n de0974-tools`
+
 ### Database Backup
 Database backups can be created using [backup-container](https://github.com/BCDevOps/backup-container). Files utilized can be found in the backup directory.
 The commands used to deploy the backup container are:
@@ -131,44 +164,3 @@ oc -n de0974-prod process -f ./openshift/templates/backup/backup-deploy.yaml \
   -p ENVIRONMENT_FRIENDLY_NAME='mautic-db backups' \
   -p ENVIRONMENT_NAME=de0974-prod | oc -n de0974-prod create -f -
 ```
-
-## Mautic Workflow
-
-### Segment
-In Mautic, an email distribution list is called a `segment`. A segment can easily be created in the `Segments` tab by giving it a name.
-
-### Form
-Forms allow users to subscribe/unsubscribe themselves using the Mautic Subscription App. For each segment two forms should be created: subscribe and unsubscribe. By default the mautic subscription app uses the subscribe form as form1 and the unsubscribe form as form2.
-
-A form can be created by selecting `Components`->`Forms`->`New Standalone Form`.
-The forms' name can be customized to any name but they must match the SUBSCRIBE_FORM and UNSUBSCRIBE_FORM parameters for the Mautic Subscription App.
-
-When creating a form it is important that the `Successful Submit Action` is set to Redirect URL and that the Redirect URL/Message is set to https://[mautic-subscription-app-url]/subscribed for the subscribed form and https://[mautic-subscription-app-url]/unsubscribed for the unsubscribe form.
-
-- Example: ```https://mautic-subscription.apps.silver.devops.gov.bc.ca/subscribed``` and ```https://mautic-subscription.apps.silver.devops.gov.bc.ca/unsubscribed```
-
-Under the `Fields` tab, a new `Email` field should be created with a label value of `Email`. This is important since the Mautic Subscription app utilizes the label value as `Email`
-
-Under the `Actions` tab, two new actions should be created: `Modify contact segments` and `Send Email to Contact`. 
-
-- For `Modify contact segments`, you can choose to `Add contact to selected segment(s)` for the subscribe form or `Remove contact from selected segment(s)` for the unsubscribe form. The name of the 
-action can be customized.
-
-- For `Send Email to Contact`, you can choose a new `Template Email` to be sent out in the `Email to Send` section.
-
-
-### Email
-A `New Segment Email` can be set up under the `Channels` -> `Emails` tab. For a basic layout the Blank theme can be used. It is important to note that an email template can only be sent to a contact once.
-
-The `subject` field will be the title of the email, `Internal Name` will be the name of the email template tracked within Mautic, and the `Contact Segment` should be chosen as the segment to send the email to.
-
-The contents of the email can be set in the `builder`.
-Within the builder, it will pre-populate two `slots` for you. We can click on the slots to edit the contents or delete them and add our own. A slot can be added by dragging a slot type from the right and dropping it in the builder section.
-
-The email can be previewed by applying, then clicking on the `Public Preview URL`
-
-The email template can be modified if needed. To do so, change the mautic-init/themes/BCGov/html/email.html.twig file, delete the var/www/html/themes/BCGov in the pod terminal, and upload the mautic-init/themes/BCGov directory using rsync.
-
-- Example: `oc rsync ./mautic-init/themes/BCGov <pod-name>:/var/www/html/themes`
-
-Alternatively, the contents of BCGov can be zipped and uploaded through the mautic user interface.
