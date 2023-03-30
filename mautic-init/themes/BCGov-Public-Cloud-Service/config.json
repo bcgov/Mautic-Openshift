@@ -1,0 +1,8 @@
+{
+  "name": "BCGov-Public-Cloud-Service",
+  "author": "BCGov",
+  "authorUrl": "https://bcdevexchange.org/",
+  "features": [
+    "email"
+  ]
+}
