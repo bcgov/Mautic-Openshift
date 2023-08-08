@@ -1,5 +1,6 @@
 # Summary
-This document contains both user documentation and developer documentation.
+This document contains both user documentation and developer documentation for the mautic server.
+There is a seperate repository for the mautic subscription app (https://github.com/bcgov/Mautic-Subscription-App). 
 
 # User Guide
 ## Community Users
