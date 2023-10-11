@@ -1,0 +1,8 @@
+{
+  "name": "bcgov subscribe confirmation",
+  "author": "Platform Services",
+  "authorUrl": "https://mautic.org",
+  "features": [
+    "email"
+  ]
+}
