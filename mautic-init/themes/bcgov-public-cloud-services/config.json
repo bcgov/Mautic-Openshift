@@ -1,0 +1,9 @@
+{
+  "name": "bcgov public cloud services",
+  "author": "Platform Services",
+  "authorUrl": "https://mautic.org",
+  "features": [
+    "email"
+  ]
+}
+

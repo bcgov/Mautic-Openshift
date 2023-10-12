@@ -1,0 +1,8 @@
+{
+  "name": "bcgov critical updates",
+  "author": "Platform Services",
+  "authorUrl": "https://mautic.org",
+  "features": [
+    "email"
+  ]
+}
