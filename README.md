@@ -71,11 +71,9 @@ To assign users with their own roles, a role can be created in the settings cog 
 Set up a subscription confirmation email by going to `Channels` -> `Emails` -> `New Template Email`. The email ID must match the CONFIRMATION_EMAIL_ID field in the `api/.env` file in the subscription app.
 
 ### Changing email themes
- Email themes can be changed in `mautic-init/themes`. The html can be eddited in the `email/html.twig` files. To update a theme, delete the email theme in `var/www/html/themes/[theme-name]` and either redeploy the app or upload the new email theme directory using rsync.
+Email themes are saved in the mautic container at `var/www/html/themes`, you can the currently used themes at `./mautic-init/themes/`. To create a new theme, you can start by making a copy of the existing themes and modify it. To test it, you can upload the new themes directory to the mautic server container directly: `oc rsync ./mautic-init/themes/BCGov <pod-name>:/var/www/html/themes`. Alternatively, you can zip the theme package and uploaded through the mautic user interface.
 
-- Example: `oc rsync ./mautic-init/themes/BCGov <pod-name>:/var/www/html/themes`
-
-Alternatively, the contents of BCGov can be zipped and uploaded through the mautic user interface.
+Once tested, it's time to rebuild the mautic image so that the themes will be available persistently. To do so, start a Pull Request with the new themes included, kick off an image build to create a new image `mautic-init:latest`. You can find the openshift template for the buildConfig [here](./openshift/mautic.yaml).
 
 # Developer Guide
 
