@@ -83,7 +83,24 @@ Once tested, it's time to rebuild the mautic image so that the themes will be av
 
 # Setting up Mautic on Openshift
 
+Mautic has two components, Mautic server and MariaDB, as two separate deploymentConfigs.
+
+There are two containers for the Mautic server pod:
+
+**mautic-init:**
+- purpose: the init container has the custom themes package, and it will make sure the themes are copied to the correct place on mautic server container
+- build: buildConfig takes `ubuntu:latest` as the base image, and copies over the custom Mautic themes from this repo. You can find the Dockerfile for the init image [here](./mautic-init/Dockerfile).
+
+**mautic:**
+- purpose: this is the main container that runs the mautic server
+- build: buildConfig builds the mautic server image based on the DockerFile located [here](./apache/Dockerfile)
+
+You can find the corresponding buildConfig template from [here](./openshift/mautic.yaml)
+
+MariaDB has its own deployment, using image `registry.redhat.io/rhel8/mariadb-103`. No extra building process needed.
+
 ## Building and Deploying Mautic on Openshift
+
 ### Create the network security policy
    First, create the network security policies using the command:
    ```oc process -f ./openshift/nsp.yaml -p APP_NAME=<app-name> -p NAMESPACE=<namespace> -p ENVIRONMENT=<environment> | oc apply -f -```
