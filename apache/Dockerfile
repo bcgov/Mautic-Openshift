@@ -83,6 +83,8 @@ RUN cp -R app/config /tmp
 RUN chmod 644 /etc/cron.d/mautic
 # Enable Apache Rewrite Module
 RUN a2enmod rewrite
+# Set server name
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Apply necessary permissions
 RUN ["chmod", "+x", "/entrypoint.sh"]
