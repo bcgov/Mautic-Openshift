@@ -71,11 +71,9 @@ To assign users with their own roles, a role can be created in the settings cog 
 Set up a subscription confirmation email by going to `Channels` -> `Emails` -> `New Template Email`. The email ID must match the CONFIRMATION_EMAIL_ID field in the `api/.env` file in the subscription app.
 
 ### Changing email themes
- Email themes can be changed in `mautic-init/themes`. The html can be eddited in the `email/html.twig` files. To update a theme, delete the email theme in `var/www/html/themes/[theme-name]` and either redeploy the app or upload the new email theme directory using rsync.
+Email themes are saved in the mautic container at `var/www/html/themes`, you can the currently used themes at `./mautic-init/themes/`. To create a new theme, you can start by making a copy of the existing themes and modify it. To test it, you can upload the new themes directory to the mautic server container directly: `oc rsync ./mautic-init/themes/BCGov <pod-name>:/var/www/html/themes`. Alternatively, you can zip the theme package and uploaded through the mautic user interface.
 
-- Example: `oc rsync ./mautic-init/themes/BCGov <pod-name>:/var/www/html/themes`
-
-Alternatively, the contents of BCGov can be zipped and uploaded through the mautic user interface.
+Once tested, it's time to rebuild the mautic image so that the themes will be available persistently. To do so, start a Pull Request with the new themes included, kick off an image build to create a new image `mautic-init:latest`. You can find the openshift template for the buildConfig [here](./openshift/mautic.yaml).
 
 # Developer Guide
 
@@ -85,7 +83,24 @@ Alternatively, the contents of BCGov can be zipped and uploaded through the maut
 
 # Setting up Mautic on Openshift
 
+Mautic has two components, Mautic server and MariaDB, as two separate deploymentConfigs.
+
+There are two containers for the Mautic server pod:
+
+**mautic-init:**
+- purpose: the init container has the custom themes package, and it will make sure the themes are copied to the correct place on mautic server container
+- build: buildConfig takes `ubuntu:latest` as the base image, and copies over the custom Mautic themes from this repo. You can find the Dockerfile for the init image [here](./mautic-init/Dockerfile).
+
+**mautic:**
+- purpose: this is the main container that runs the mautic server
+- build: buildConfig builds the mautic server image based on the DockerFile located [here](./apache/Dockerfile)
+
+You can find the corresponding buildConfig template from [here](./openshift/mautic.yaml)
+
+MariaDB has its own deployment, using image `registry.redhat.io/rhel8/mariadb-103`. No extra building process needed.
+
 ## Building and Deploying Mautic on Openshift
+
 ### Create the network security policy
    First, create the network security policies using the command:
    ```oc process -f ./openshift/nsp.yaml -p APP_NAME=<app-name> -p NAMESPACE=<namespace> -p ENVIRONMENT=<environment> | oc apply -f -```
